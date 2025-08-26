@@ -17,11 +17,12 @@ syntax on
 call plug#begin()
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'mhinz/vim-signify'
 Plug 'yegappan/lsp'
-Plug 'ziglang/zig.vim'
 call plug#end()
 
-au FileType c,cpp,zig,java,python setl sw=4 ts=4 sts=4 et
+au FileType c,cpp,java,python setl sw=4 ts=4 sts=4 et
 au FileType javascript,typescript setl sw=2 ts=2 sts=2 et
 au FileType go setl sw=4 ts=4 sts=4 noet fp=gofmt
 au FileType json setl sw=4 ts=4 sts=4 noet fp=jq
@@ -33,6 +34,7 @@ nnoremap <C-l> :nohlsearch<CR>
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 autocmd QuickFixCmdPost [^l]* cwindow
+au FileType help,qf,fugitive,fugitiveblame nnoremap <buffer> q :q<CR>
 
 # generate tags in the background
 def GenTags()
@@ -45,8 +47,8 @@ def GenTags()
 enddef
 command! -nargs=0 Tags GenTags()
 
-nnoremap - :Explore<CR>
-au FileType netrw nnoremap <buffer> <C-c> :Rexplore<CR>
+nnoremap <silent> - :Explore<CR>
+au FileType netrw nnoremap <silent> <buffer> <C-c> :Rex<CR>
 
 # extend vim grep abilities with ripgrep, result can be accessible through qf list
 if executable('rg')
@@ -100,10 +102,6 @@ var lsp_servers = [{
   path: 'clangd',
   args: ['--background-index']
 }, {
-  name: 'zls',
-  filetype: ['zig', 'zir'],
-  path: 'zls'
-}, {
   name: 'pylsp',
   filetype: ['python'],
   path: 'pylsp'
@@ -129,7 +127,7 @@ def LspConfig()
 enddef
 augroup lsp_keymaps
   au!
-  au FileType c,cpp,zig,javascript,typescript,python call LspConfig()
+  au FileType c,cpp,javascript,typescript,python call LspConfig()
 augroup END
 
 defcompile
