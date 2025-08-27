@@ -22,11 +22,6 @@ Plug 'mhinz/vim-signify'
 Plug 'yegappan/lsp'
 call plug#end()
 
-au FileType c,cpp,java,python setl sw=4 ts=4 sts=4 et
-au FileType javascript,typescript setl sw=2 ts=2 sts=2 et
-au FileType go setl sw=4 ts=4 sts=4 noet fp=gofmt
-au FileType json setl sw=4 ts=4 sts=4 noet fp=jq
-
 autocmd BufRead,BufNewFile *.log,*.log{.*} setl ft=messages
 autocmd BufRead,BufNewFile *.psql setl ft=sql
 
@@ -104,7 +99,8 @@ var lsp_servers = [{
 }, {
   name: 'pylsp',
   filetype: ['python'],
-  path: 'pylsp'
+  path: 'pylsp',
+  args: []
 }, {
   name: 'tsserver',
   filetype: ['javascript', 'typescript'],
@@ -127,7 +123,31 @@ def LspConfig()
 enddef
 augroup lsp_keymaps
   au!
-  au FileType c,cpp,javascript,typescript,python call LspConfig()
+  au FileType c,cpp,python,javascript,typescript call LspConfig()
+augroup END
+
+au FileType python setl sw=4 ts=4 sts=4 et
+au FileType javascript,typescript setl sw=2 ts=2 sts=2 et
+au FileType go setl sw=4 ts=4 sts=4 noet fp=gofmt
+au FileType json setl sw=4 ts=4 sts=4 noet fp=jq
+
+augroup clang_config
+  autocmd!
+  autocmd FileType c,cpp if filereadable(findfile('CMakeLists.txt', '.;'))
+    | setl sw=4 ts=4 sts=4 et
+    | setl makeprg=cmake\ -S\ %:p:h\ -B\ build\ \&\&\ cmake\ --build\ build
+    | setl errorformat=%f:%l:%c:\ %m
+    | endif
+augroup END
+
+augroup java_config
+  autocmd!
+  autocmd FileType java if filereadable(findfile('pom.xml', '.;'))
+    | setl sw=4 ts=4 sts=4 et
+    | setl includeexpr=substitute(v:fname,'\\.','/','g')
+    | setl makeprg=mvn\ compile
+    | setl errorformat=[ERROR]\ %f:[%l\\,%v]\ %m
+    | endif
 augroup END
 
 defcompile

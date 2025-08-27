@@ -57,8 +57,8 @@ else
   fi
 
   echo '[-] installing essential packages [-]'
-  sudo apt-get install -y curl wget zip zsh git coreutils gcc clang cmake make ninja-build parallel jq
-  sudo apt-get install -y alacritty watch tree vim vim-gtk3 tmux fzf ripgrep universal-ctags ncdu xclip
+  sudo apt-get install -y curl wget zip zsh git coreutils gcc clang clangd cmake make ninja-build parallel
+  sudo apt-get install -y alacritty watch tree vim vim-gtk3 tmux fzf ripgrep jq universal-ctags ncdu xclip
 
   if lspci | grep -E "VGA|3D" | grep -iq "AMD"; then
     echo '[-] installing amd essential packages [-]'
