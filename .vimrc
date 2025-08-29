@@ -19,6 +19,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'mhinz/vim-signify'
+Plug 'machakann/vim-highlightedyank'
 Plug 'yegappan/lsp'
 call plug#end()
 
@@ -125,6 +126,8 @@ augroup lsp_keymaps
   au!
   au FileType c,cpp,python,javascript,typescript call LspConfig()
 augroup END
+
+g:highlightedyank_highlight_duration = 150
 
 au FileType python setl sw=4 ts=4 sts=4 et
 au FileType javascript,typescript setl sw=2 ts=2 sts=2 et
