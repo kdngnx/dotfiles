@@ -79,27 +79,38 @@ nnoremap <Space>p "+p
 nnoremap <Space>P "+P
 vnoremap <Space>p "+p
 
-autocmd FileType python setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-autocmd FileType javascript,typescript setl shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+autocmd FileType vim setl keywordprg=:help
 autocmd FileType go setl shiftwidth=4 tabstop=4 softtabstop=4 noexpandtab formatprg=gofmt
 autocmd FileType json setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab formatprg=jq
 
-augroup clang_config
+augroup clangrc
   autocmd!
+  autocmd FileType c,cpp setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab
   autocmd FileType c,cpp if filereadable(findfile('CMakeLists.txt', '.;'))
-    | setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab
     | setl makeprg=cmake\ -S\ %:p:h\ -B\ build\ \&\&\ cmake\ --build\ build
     | setl errorformat=%f:%l:%c:\ %m
     | endif
 augroup END
 
-augroup java_config
+augroup javarc
   autocmd!
+  autocmd FileType java setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab
   autocmd FileType java if filereadable(findfile('pom.xml', '.;'))
-    | setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-    | setl includeexpr=substitute(v:fname,'\\.','/','g')
     | setl makeprg=mvn\ compile
     | setl errorformat=[ERROR]\ %f:[%l\\,%v]\ %m
+    | endif
+augroup END
+
+augroup pythonrc
+  autocmd!
+  autocmd FileType python setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab
+augroup END
+
+augroup javascriptrc
+  autocmd!
+  autocmd FileType javascript,typescript setl shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+  autocmd FileType javascript,typescript if filereadable(findfile('package.json', '.;'))
+    | setl makeprg=npm\ run\ build
     | endif
 augroup END
 
@@ -145,9 +156,6 @@ def LspConfig()
   nnoremap <buffer> <C-w>d :LspDiagCurrent<CR>
   nnoremap <buffer> K :LspHover<CR>
 enddef
-augroup lsp_config
-  autocmd!
-  autocmd FileType c,cpp,python,javascript,typescript call LspConfig()
-augroup END
+autocmd User LspAttached call LspConfig()
 
 defcompile
