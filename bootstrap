@@ -17,10 +17,12 @@ function linking() {
   ln -sfn $(pwd)/.gitignore ~/.gitignore
   git config --global core.excludesFile '~/.gitignore'
 
+  touch ~/.profile
   mkdir -p ~/.local/bin
   mkdir -p ~/personal
   mkdir -p ~/repos
-  touch ~/.profile
+  mkdir -p ~/.vim/pack/downloads/opt
+  mkdir -p ~/.vim/undo
 }
 echo '[-] linking dotfiles [-]'
 linking
@@ -116,10 +118,6 @@ if [ ! -d "$target_dir" ] ; then
   echo '[-] cloning zsh-autosuggestions [-]'
   git clone https://github.com/zsh-users/zsh-autosuggestions "$target_dir"
 fi
-
-echo '[-] downloading plug.vim script [-]'
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 current_shell=$(echo $SHELL)
 if [ "$current_shell" != '/usr/bin/zsh' ] && [ "$current_shell" != '/bin/zsh' ]; then

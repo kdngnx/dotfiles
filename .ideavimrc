@@ -6,8 +6,6 @@ set ideajoin ideamarks ideaglobalmode
 set ideastatusicon=gray ideawrite=file visualdelay=50
 " enable ideavim plugins https://jb.gg/ideavim-plugins
 set commentary
-set surround
-set highlightedyank
 " map ide actions to ideavim - https://jb.gg/abva4t
 nmap <Space>f <Action>(GotoFile)
 nmap <Space>e <Action>(ShowNavBar)
