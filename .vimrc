@@ -6,31 +6,45 @@ set ignorecase smartcase autoread autoindent incsearch hlsearch
 set updatetime=256 wildmenu wildoptions=pum,tagfile wildcharm=<C-z>
 set shiftwidth=2 tabstop=2 softtabstop=2 shiftround expandtab
 set background=dark list lcs=tab:>\ ,trail:-,nbsp:+
-set undodir=~/.vim/undo undofile
 &showbreak = '+++ '
-colorscheme desert
 
 filetype on
 filetype indent on
 syntax on
 
-# keep things simple here, only essentials
-# to add a new one:
-# - cd ~/.vim/pack/downloads/opt
-# - git clone <repo_url>
-# - vim -u NONE -c "helptags ~/.vim/pack/downloads/opt/<dir_name>/doc" -c q
-packadd fugitive
-packadd commentary
-packadd lsp
-
-autocmd BufRead,BufNewFile *.log,*.log{.*} setl ft=messages
-autocmd BufRead,BufNewFile *.psql setl ft=sql
+nnoremap <Space>e :edit %:h<C-z>
+nnoremap <Space>b :buffer <C-z>
+nnoremap <Space>s :%s/<C-r><C-w>//gI<Left><Left><Left>
+vnoremap <Space>s "0y:%s/<C-r>=escape(@0,'/\')<CR>//gI<Left><Left><Left>
+vnoremap // "0y/\V<C-r>=escape(@0,'/\')<CR><CR>
 
 nnoremap <C-l> :nohlsearch<CR>
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 autocmd QuickFixCmdPost [^l]* cwindow
 autocmd FileType help,qf,messages,fugitive,fugitiveblame nnoremap <buffer> q :q<CR>
+
+nnoremap <silent> - :Explore<CR>
+autocmd FileType netrw nnoremap <silent> <buffer> <C-c> :Rex<CR>
+
+autocmd BufRead,BufNewFile *.log,*.log{.*} setl ft=messages
+autocmd BufRead,BufNewFile *.psql setl ft=sql
+autocmd FileType vim setl keywordprg=:help
+
+nnoremap <Space>y "+y
+vnoremap <Space>y "+y
+nnoremap <Space>p "+p
+nnoremap <Space>P "+P
+vnoremap <Space>p "+p
+
+# non-server config
+set undodir=~/.vim/undo undofile
+colorscheme desert
+
+# keep things simple here, only essentials
+packadd fugitive
+packadd commentary
+packadd lsp
 
 # generate tags in the background
 def GenTags()
@@ -43,9 +57,6 @@ def GenTags()
 enddef
 command! -nargs=0 Tags GenTags()
 
-nnoremap <silent> - :Explore<CR>
-autocmd FileType netrw nnoremap <silent> <buffer> <C-c> :Rex<CR>
-
 # extend vim grep abilities with ripgrep, result can be accessible through qf list
 if executable('rg')
   set grepprg=rg\ --vimgrep\ --smart-case\ --no-heading\ --column
@@ -55,12 +66,6 @@ if executable('rg')
   nnoremap <Space>G :grep! --case-sensitive --fixed-strings '<C-r><C-w>'<CR>
   nnoremap <Space>/ :grep! --hidden --no-ignore --fixed-strings ''<Left>
 endif
-vnoremap // "0y/\V<C-r>=escape(@0,'/\')<CR><CR>
-
-nnoremap <Space>e :edit %:h<C-z>
-nnoremap <Space>b :buffer 
-nnoremap <Space>s :%s/<C-r><C-w>//gI<Left><Left><Left>
-vnoremap <Space>s "0y:%s/<C-r>=escape(@0,'/\')<CR>//gI<Left><Left><Left>
 
 # minimal files finding using fzf + rigrep
 def FilesCommand()
@@ -73,13 +78,6 @@ enddef
 command! -nargs=0 Files FilesCommand()
 nnoremap <Space>f :Files<CR>
 
-nnoremap <Space>y "+y
-vnoremap <Space>y "+y
-nnoremap <Space>p "+p
-nnoremap <Space>P "+P
-vnoremap <Space>p "+p
-
-autocmd FileType vim setl keywordprg=:help
 autocmd FileType go setl shiftwidth=4 tabstop=4 softtabstop=4 noexpandtab formatprg=gofmt
 autocmd FileType json setl shiftwidth=4 tabstop=4 softtabstop=4 expandtab formatprg=jq
 
