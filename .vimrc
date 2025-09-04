@@ -5,7 +5,7 @@ set splitbelow splitright title visualbell ruler showmatch
 set ignorecase smartcase autoread autoindent incsearch hlsearch
 set updatetime=256 wildmenu wildoptions=pum,tagfile wildcharm=<C-z>
 set shiftwidth=2 tabstop=2 softtabstop=2 shiftround expandtab
-set background=dark list lcs=tab:>\ ,trail:-,nbsp:+
+set termguicolors background=dark list lcs=tab:>\ ,trail:-,nbsp:+
 &showbreak = '+++ '
 
 filetype on
@@ -111,10 +111,10 @@ augroup javascriptrc
     | endif
 augroup END
 
+highlight StatusLine ctermbg=gray guibg=gray ctermfg=black guifg=black
+highlight StatusLineNC ctermbg=darkgray guibg=darkgray ctermfg=black guifg=black
+highlight VertSplit cterm=NONE ctermbg=NONE ctermfg=darkgray guibg=NONE guifg=darkgray
 highlight SignColumn cterm=NONE ctermbg=NONE guibg=NONE
-highlight VertSplit cterm=NONE ctermbg=NONE guibg=NONE
-highlight StatusLine ctermbg=gray ctermfg=black
-highlight StatusLineNC ctermbg=darkgray ctermfg=black
 
 # plugins
 g:highlightedyank_highlight_duration = 150
