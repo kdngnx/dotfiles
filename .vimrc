@@ -37,16 +37,16 @@ nnoremap <Space>p "+p
 nnoremap <Space>P "+P
 vnoremap <Space>p "+p
 
-# non-server config
+# keep things simple here, only essentials
+packadd commentary
+packadd fugitive
+packadd vim-surround
+packadd vim-highlightedyank
+packadd lsp
+
 set undodir=~/.vim/undo undofile
 colorscheme desert
 
-# keep things simple here, only essentials
-packadd fugitive
-packadd commentary
-packadd lsp
-
-# generate tags in the background
 def GenTags()
   if !executable('ctags')
     echohl WarningMsg | echomsg 'no ctags installation found' | echohl None
@@ -67,7 +67,6 @@ if executable('rg')
   nnoremap <Space>/ :grep! --hidden --no-ignore --fixed-strings ''<Left>
 endif
 
-# minimal files finding using fzf + rigrep
 def FilesCommand()
   const file = trim(system('rg --files --hidden --follow | fzf'))
   if !empty(file)
@@ -118,6 +117,8 @@ highlight StatusLine ctermbg=gray ctermfg=black
 highlight StatusLineNC ctermbg=darkgray ctermfg=black
 
 # plugins
+g:highlightedyank_highlight_duration = 150
+
 call LspAddServer([{
   name: 'clang',
   filetype: ['c', 'cpp', 'proto'],
