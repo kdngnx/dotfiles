@@ -38,10 +38,10 @@ nnoremap <Space>P "+P
 vnoremap <Space>p "+p
 
 # keep things simple here, only essentials
-packadd fugitive
-packadd lsp
-packadd vim-highlightedyank
+packadd vim-fugitive
 packadd vim-surround
+packadd vim-highlightedyank
+packadd lsp
 
 set undodir=~/.vim/undo undofile
 colorscheme desert
