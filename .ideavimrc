@@ -2,12 +2,11 @@
 " find more examples here: https://jb.gg/share-ideavimrc
 set visualbell ignorecase smartcase incsearch hlsearch list
 set showcmd showmode scrolloff=0 sidescrolloff=0 colorcolumn=120
-set ideajoin ideamarks ideaglobalmode
 set ideastatusicon=gray ideawrite=file visualdelay=50
+set ideajoin ideamarks ideaglobalmode
 " enable ideavim plugins https://jb.gg/ideavim-plugins
-set commentary
-set surround
 set highlightedyank
+set surround
 " map ide actions to ideavim - https://jb.gg/abva4t
 nmap <Space>f <Action>(GotoFile)
 nmap <Space>e <Action>(ShowNavBar)
