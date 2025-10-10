@@ -1,5 +1,6 @@
 [window]
 padding = { x = 5, y = 5 }
+decorations = "None"
 startup_mode = "Maximized"
 resize_increments = true
 dynamic_title = true

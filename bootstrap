@@ -43,22 +43,26 @@ if [ "$(uname -s)" = "Darwin" ]; then  # macos
 
   echo '[-] installing essential packages [-]'
   brew update
-  brew install curl wget git coreutils watch cmake ninja tree parallel
-  brew install alacritty tmux ncdu ripgrep jq universal-ctags font-jetbrains-mono
+  brew install curl wget git coreutils cmake ninja watch tree parallel ncdu
+  brew install alacritty tmux ripgrep jq universal-ctags font-jetbrains-mono
 else  # linux or wsl
   echo '[-] checking secure boot state [-]' && \
     [ ! -f /etc/wsl.conf ] && [[ "$(mokutil --sb-state)" != *"SecureBoot enabled"* ]] && \
     echo "could not determine the secure boot state." && exit 1
 
   echo '[-] installing essential packages [-]'
-  sudo apt-get update && sudo apt-get upgrade -y
-  sudo apt-get install -y curl wget zip zsh git coreutils gcc clang clangd cmake make ninja-build ncdu
-  sudo apt-get install -y alacritty watch tree vim tmux ripgrep jq universal-ctags parallel wl-clipboard
+  sudo dnf upgrade -y
+  sudo dnf install -y curl wget zip zsh git coreutils gcc clang clangd cmake make ninja-build parallel
+  sudo dnf install -y alacritty watch tree ncdu tmux vim ripgrep jq universal-ctags wl-clipboard
 
-  if lspci | grep -E "VGA|3D" | grep -iq "AMD" ; then
-    echo '[-] installing some extra packages [-]'
-    ln -sfn $(pwd)/MangoHud $XDG_CONFIG_HOME/MangoHud
-    sudo apt-get install -y rocm-smi mangohud
+  if lspci | grep -E "VGA|3D" | grep -iq "AMD"; then
+    echo '[-] enabling rpm fusion repositories [-]'
+    sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+    sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    echo '[-] installing steam essential packages [-]'
+    sudo dnf install -y steam-devices rocm-smi rocm-devel flatpak
+    echo '[!] remember to install Flatseal and MangoHud flatpaks [!]'
+    echo '[!] for ROCm related stuff, checkout https://fedoraproject.org/wiki/SIGs/HC#Installation [!]'
   fi
 
   echo '[-] installing jetbrains mono font [-]'
@@ -67,15 +71,11 @@ else  # linux or wsl
   target_dir=${XDG_DATA_HOME:=~/.local/share}/ibus-bamboo; \
     [ ! -f /etc/wsl.conf ] && [ ! -d $target_dir ] && \
     echo '[-] building ibus-bamboo [-]' && \
-    sudo apt-get install -y ibus make golang libx11-dev libxtst-dev libgtk-3-dev && \
-    git clone https://github.com/BambooEngine/ibus-bamboo.git $target_dir && \
+    sudo dnf install -y ibus make go libX11-devel libXtst-devel gtk3-devel && \
+    git clone --depth 1 https://github.com/BambooEngine/ibus-bamboo.git $target_dir && \
     (cd $target_dir && sudo make install PREFIX=/usr) && \
     env DCONF_PROFILE=ibus dconf write /desktop/ibus/general/preload-engines "['BambooUs', 'Bamboo']" && \
     gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Bamboo')]"
-
-  [ ! -f /etc/wsl.conf ] && \
-    echo '[-] disable dash to dock hot-keys on ubuntu [-]' && \
-    gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
 fi
 
 # apply for both macos and linux
@@ -98,7 +98,7 @@ target_dir=~/.fzf; \
 
 target_dir=${XDG_DATA_HOME:=~/.local/share}/neovim; \
   echo '[-] building neovim [-]'; \
-  [ ! -d $target_dir ] && git clone https://github.com/neovim/neovim.git $target_dir; \
+  [ ! -d $target_dir ] && git clone --depth 1 https://github.com/neovim/neovim.git $target_dir; \
   (cd $target_dir && \
   git pull --rebase && \
   make distclean && \
