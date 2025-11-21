@@ -5,7 +5,7 @@ set incsearch hlsearch visualbell showcmd showmode
 set timeout timeoutlen=512 updatetime=256
 set wildmenu wildoptions=pum,tagfile wildcharm=<C-z>
 set shiftwidth=4 tabstop=4 softtabstop=4 shiftround expandtab
-set background=dark laststatus=2
+set background=dark laststatus=2 t_Co=16
 set wrap list lcs=tab:>\ ,trail:-,nbsp:+
 let &showbreak = '+++ '
 
@@ -32,8 +32,8 @@ nnoremap <Space>P "+P
 vnoremap <Space>p "+p
 
 " keep things simple here, only essentials
-set termguicolors undofile undodir=~/.vim/undo
-colorscheme retrobox
+set undofile undodir=~/.vim/undo
+colorscheme quiet
 
 function! s:gen_tags() abort
     if !executable('ctags')
@@ -79,8 +79,9 @@ command! -nargs=1 -complete=customlist,s:find_complete Find call s:find_command(
 nnoremap <Space>f :Find 
 nnoremap <Space>F :Find <C-r><C-w><C-z>
 
-autocmd FileType c,cpp,java,python setlocal sw=4 ts=4 sts=4 et
+autocmd FileType c,cpp,java setlocal sw=4 ts=4 sts=4 et
 autocmd FileType c,cpp if filereadable(findfile('CMakeLists.txt', '.;')) |
+            \ setlocal fp=clang-format |
             \ setlocal makeprg=cmake\ -S\ %:p:h\ -B\ build\ \&\&\ cmake\ --build\ build |
             \ setlocal errorformat=%f:%l:%c:\ %m | endif
 
@@ -92,5 +93,6 @@ autocmd FileType javascript,typescript setlocal sw=2 ts=2 sts=2 et
 autocmd FileType javascript,typescript if filereadable(findfile('package.json', '.;')) |
             \ setlocal makeprg=npm\ run\ build | endif
 
-autocmd FileType json setlocal sw=4 ts=4 sts=4 et fp=jq
 autocmd FileType go setlocal sw=4 ts=4 sts=4 noet fp=gofmt
+autocmd FileType python setlocal sw=4 ts=4 sts=4 et fp=black\ -
+autocmd FileType json setlocal sw=4 ts=4 sts=4 et fp=jq

@@ -87,10 +87,6 @@ target_dir=~/.zsh/zsh-autosuggestions; \
     [ ! -d $target_dir ] && echo '[-] cloning zsh-autosuggestions [-]' && \
     git clone https://github.com/zsh-users/zsh-autosuggestions $target_dir
 
-echo '[-] downloading vim-plug script [-]'
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
 current_shell=$(echo $SHELL)
 if [ "$current_shell" != '/usr/bin/zsh' ] && [ "$current_shell" != '/bin/zsh' ] ; then
     echo '[-] change default shell to zsh [-]'
