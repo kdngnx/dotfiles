@@ -21,7 +21,7 @@ nmap <Space>p "+p
 nmap <Space>P "+P
 vmap <Space>p "+p
 " code navigation
-nmap <C-]> <Action>(GotoDeclaration)
+nmap gd <Action>(GotoDeclaration)
 nmap gq <Action>(ReformatCode)
 vmap gq <Action>(ReformatCode)
 nmap gi <Action>(GotoImplementation)

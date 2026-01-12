@@ -13,6 +13,7 @@ lsp.config("*", {
 
         -- mappings; use defaults whenever possible
         -- see `:help vim.lsp.*` for documentation on any of the below functions
+        map("n", "gd", lsp.buf.definition)
         map("n", "gi", lsp.buf.implementation)
         map("n", "gr", lsp.buf.references)
         map("n", "gu", function()
