@@ -1,4 +1,7 @@
-source ~/.vimrc
+set ignorecase smartcase
+set incsearch hlsearch
+set visualbell showcmd showmode
+set timeout timeoutlen=512
 set ideaglobalmode ideajoin ideamarks
 set ideastatusicon=gray ideawrite=file
 " or :actionlist [pattern]
@@ -11,6 +14,12 @@ vmap <Space>g <Action>(FindInPath)
 nmap <Space>G viw:action FindInPath<CR>
 nmap <Space>/ <Action>(SearchEverywhere)
 nmap - <Action>(SelectInProjectView)
+" copy to system clipboard
+nmap <Space>y "+y
+vmap <Space>y "+y
+nmap <Space>p "+p
+nmap <Space>P "+P
+vmap <Space>p "+p
 " code navigation
 nmap <C-]> <Action>(GotoDeclaration)
 nmap gq <Action>(ReformatCode)
