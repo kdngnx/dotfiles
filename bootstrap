@@ -1,0 +1,194 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+set -euo pipefail
+
+readonly XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+create_directories() {
+    echo "creating essential files/directories"
+    mkdir -p "$XDG_DATA_HOME"
+    mkdir -p "$XDG_CONFIG_HOME"
+    mkdir -p "$HOME/personal"
+    mkdir -p "$HOME/repos"
+    mkdir -p "$HOME/.local/bin"
+    touch "$HOME/.profile"
+}
+
+link_dotfiles() {
+    echo "linking dotfiles"
+    local -a dotfiles=(
+        .bash_profile
+        .bashrc
+        .tmux.conf
+        .psqlrc
+        .vimrc
+        .ideavimrc
+        .ripgreprc
+        .gitignore
+        nvim
+        ghostty
+    )
+
+    for file in "${dotfiles[@]}"; do
+        if [[ -f "$ROOT_DIR/$file" ]]; then
+            ln -sfn "$ROOT_DIR/$file" "$HOME/$file"
+        elif [[ -d "$ROOT_DIR/$file" ]]; then
+            ln -sfn "$ROOT_DIR/$file" "$XDG_CONFIG_HOME/$file"
+        else
+            echo "file not found: $ROOT_DIR/$file" >&2
+        fi
+    done
+}
+
+configure_git() {
+    echo "configuring git"
+    git config --global core.excludesFile "$HOME/.gitignore"
+    git config --global pull.rebase true
+    git config --global diff.tool "nvim -d"
+    git config --global merge.tool "nvim -d"
+    git config --global merge.conflictstyle diff3
+}
+
+setup_macos() {
+    if ! xcode-select -p &> /dev/null; then
+        echo "installing xcode command line tools"
+        xcode-select --install
+    fi
+
+    if ! command -v brew &> /dev/null; then
+        echo "installing homebrew"
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> "$HOME/.profile"
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+
+    echo "installing essential packages"
+    brew update
+
+    local -a packages=(
+        bash curl wget git coreutils watch cmake ninja tree parallel ncdu
+        ghostty tmux ripgrep jq gdb bash-completion@2 universal-ctags font-hack
+    )
+    brew install "${packages[@]}"
+}
+
+build_from_source() {
+    local name="$1"
+    local target_dir="$XDG_DATA_HOME/$name"
+    local repo_url="$2"
+    local build_commands="$3"
+
+    echo "building $name from source"
+    if [[ !  -d "$target_dir" ]]; then
+        git clone --depth 1 "$repo_url" "$target_dir"
+    else
+        echo "$name already cloned, updating..."
+        git -C "$target_dir" pull --rebase
+    fi
+
+    (
+        cd "$target_dir"
+        eval "$build_commands"
+    )
+}
+
+setup_linux() {
+    echo "installing essential packages"
+    sudo apt-get update && sudo apt-get upgrade -y
+
+    local -a packages=(
+        curl wget zip git coreutils gcc clang clangd cmake make ninja-build parallel ncdu xxd
+        watch tree vim tmux gdb ripgrep jq wl-clipboard bash-completion universal-ctags
+    )
+    sudo apt-get install -y "${packages[@]}"
+
+    if [ ! -f "/etc/wsl.conf" ]; then
+        # most convenient way for now, since ghostty doesn't use latest zig
+        # might be updated in the future
+        sudo snap install ghostty --classic
+
+        echo "disable dash to dock hot-keys on ubuntu"
+        gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
+    fi
+}
+
+install_font() {
+    local target_dir="$XDG_DATA_HOME/fonts"
+    if [[ -f "$target_dir/Hack-Regular.ttf" ]]; then
+        echo "hack font already installed"
+        return 0
+    fi
+
+    echo "installing hack font"
+    wget -O /tmp/Hack-v3.003-ttf.zip \
+        https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
+
+    mkdir -p "$target_dir"
+    unzip -j /tmp/Hack-v3.003-ttf.zip "ttf/*.ttf" -d "$target_dir"
+
+    rm -f /tmp/Hack-v3.003-ttf.zip
+    fc-cache -f -v
+}
+
+install_git_prompt() {
+    echo "installing git-prompt.sh"
+    curl -fsSL https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh \
+        -o "$HOME/.git-prompt.sh"
+}
+
+install_neovim() {
+    build_from_source "neovim" \
+        "https://github.com/neovim/neovim.git" \
+        "make distclean && make CMAKE_BUILD_TYPE=RelWithDebInfo && sudo make install"
+}
+
+configure_shell() {
+    if [[ "$SHELL" == */bash ]]; then
+        echo "default shell is already bash"
+        return 0
+    fi
+
+    echo "changing default shell to bash"
+
+    local bash_path
+    bash_path=$(command -v bash)
+
+    if [[ -z "$bash_path" ]]; then
+        echo "bash not found in path" >&2
+        return 1
+    fi
+
+    if ! grep -q "^$bash_path$" /etc/shells; then
+        echo "adding $bash_path to /etc/shells"
+        echo "$bash_path" | sudo tee -a /etc/shells
+    fi
+
+    chsh -s "$bash_path"
+    echo "please log out and log back in for shell change to take effect"
+}
+
+main() {
+    create_directories
+    link_dotfiles
+    configure_git
+    echo
+
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        setup_macos
+    else
+        setup_linux
+        install_font
+    fi
+    echo
+
+    install_git_prompt
+    install_neovim
+    echo
+
+    configure_shell
+    echo
+}
+
+main "$@"

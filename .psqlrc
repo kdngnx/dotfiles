@@ -1,0 +1,12 @@
+\encoding unicode
+\conninfo
+\timing on
+\x auto
+\pset null 'NULL'
+\pset format wrapped
+\set client_min_messages = warning;
+\set VERBOSITY verbose
+\set HISTCONTROL ignoredups
+\set COMP_KEYWORD_CASE upper
+\set ON_ERROR_ROLLBACK interactive
+\set AUTOCOMMIT off

@@ -1,0 +1,25 @@
+local set = vim.opt
+vim.cmd.colorscheme("retrobox")
+set.swapfile = false
+set.showmatch = true
+set.ignorecase = true
+set.smartcase = true
+set.splitbelow = true
+set.splitright = true
+set.updatetime = 256
+set.timeoutlen = 512
+set.shiftwidth = 4
+set.tabstop = 4
+set.softtabstop = 4
+set.expandtab = true
+set.shiftround = true
+set.showbreak = "+++ "
+set.list = true
+set.undofile = true
+set.title = true
+set.visualbell = true
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
