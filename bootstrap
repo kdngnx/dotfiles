@@ -18,9 +18,8 @@ create_directories() {
 
 link_dotfiles() {
     echo "linking dotfiles"
+
     local -a dotfiles=(
-        .bash_profile
-        .bashrc
         .tmux.conf
         .psqlrc
         .ideavimrc
@@ -39,6 +38,9 @@ link_dotfiles() {
             echo "file not found: $ROOT_DIR/$file" >&2
         fi
     done
+
+    # exception
+    ln -sfn "$ROOT_DIR/config.fish" "$XDG_CONFIG_HOME/fish/config.fish"
 }
 
 configure_git() {
@@ -67,8 +69,8 @@ setup_macos() {
     brew update
 
     local -a packages=(
-        bash curl wget git coreutils watch cmake ninja tree parallel ncdu
-        ghostty tmux ripgrep jq gdb bash-completion@2 universal-ctags font-hack
+        fish curl wget git coreutils watch cmake ninja tree parallel
+        ghostty tmux ripgrep ncdu jq gdb universal-ctags font-hack
     )
     brew install "${packages[@]}"
 }
@@ -93,26 +95,6 @@ build_from_source() {
     )
 }
 
-setup_linux() {
-    echo "installing essential packages"
-    sudo apt-get update && sudo apt-get upgrade -y
-
-    local -a packages=(
-        curl wget zip git coreutils gcc clang clangd cmake make ninja-build parallel ncdu xxd
-        watch tree vim tmux gdb ripgrep jq wl-clipboard bash-completion universal-ctags
-    )
-    sudo apt-get install -y "${packages[@]}"
-
-    if [ ! -f "/etc/wsl.conf" ]; then
-        # most convenient way for now, since ghostty doesn't use latest zig
-        # might be updated in the future
-        sudo snap install ghostty --classic
-
-        echo "disable dash to dock hot-keys on ubuntu"
-        gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
-    fi
-}
-
 install_font() {
     local target_dir="$XDG_DATA_HOME/fonts"
     if [[ -f "$target_dir/Hack-Regular.ttf" ]]; then
@@ -131,10 +113,26 @@ install_font() {
     fc-cache -f -v
 }
 
-install_git_prompt() {
-    echo "installing git-prompt.sh"
-    curl -fsSL https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh \
-        -o "$HOME/.git-prompt.sh"
+setup_linux() {
+    echo "installing essential packages"
+    sudo apt-get update && sudo apt-get upgrade -y
+
+    local -a packages=(
+        curl wget zip git fish coreutils gcc clang clangd cmake make ninja-build xxd
+        watch tree vim tmux gdb ripgrep ncdu parallel jq wl-clipboard universal-ctags
+    )
+    sudo apt-get install -y "${packages[@]}"
+
+    if [ ! -f "/etc/wsl.conf" ]; then
+        install_font
+
+        # most convenient way for now, since ghostty doesn't use latest zig
+        # might be updated in the future
+        sudo snap install ghostty --classic
+
+        echo "disable dash to dock hot-keys on ubuntu"
+        gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
+    fi
 }
 
 install_neovim() {
@@ -144,27 +142,27 @@ install_neovim() {
 }
 
 configure_shell() {
-    if [[ "$SHELL" == */bash ]]; then
-        echo "default shell is already bash"
+    if [[ "$SHELL" == */fish ]]; then
+        echo "default shell is already fish"
         return 0
     fi
 
-    echo "changing default shell to bash"
+    echo "changing default shell to fish"
 
-    local bash_path
-    bash_path=$(command -v bash)
+    local fish_path
+    fish_path=$(command -v fish)
 
-    if [[ -z "$bash_path" ]]; then
-        echo "bash not found in path" >&2
+    if [[ -z "$fish_path" ]]; then
+        echo "fish not found in path" >&2
         return 1
     fi
 
-    if ! grep -q "^$bash_path$" /etc/shells; then
-        echo "adding $bash_path to /etc/shells"
-        echo "$bash_path" | sudo tee -a /etc/shells
+    if ! grep -q "^$fish_path$" /etc/shells; then
+        echo "adding $fish_path to /etc/shells"
+        echo "$fish_path" | sudo tee -a /etc/shells
     fi
 
-    chsh -s "$bash_path"
+    chsh -s "$fish_path"
     echo "please log out and log back in for shell change to take effect"
 }
 
@@ -178,11 +176,9 @@ main() {
         setup_macos
     else
         setup_linux
-        install_font
     fi
     echo
 
-    install_git_prompt
     install_neovim
     echo
 
