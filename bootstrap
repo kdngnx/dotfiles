@@ -70,7 +70,7 @@ setup_macos() {
     brew update
 
     local -a packages=(
-        fish curl wget git coreutils watch cmake ninja tree parallel
+        curl wget git fish coreutils watch cmake ninja tree parallel
         ghostty tmux ripgrep ncdu jq gdb universal-ctags font-hack
     )
     brew install "${packages[@]}"
