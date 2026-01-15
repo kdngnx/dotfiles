@@ -6,6 +6,8 @@ if status is-interactive
 
     set -gx EDITOR nvim
     set -gx VISUAL nvim
+
+    set -gx PATH "$HOME/.local/bin" $PATH
     # SDL_VIDEO_DRIVER=wayland SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1
 
     alias vi=nvim
