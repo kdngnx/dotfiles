@@ -6,8 +6,16 @@ readonly XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+create_directories() {
+    echo 'creating essential files/directories'
+    mkdir -p "$XDG_DATA_HOME"
+    mkdir -p "$XDG_CONFIG_HOME"
+    mkdir -p "$HOME/personal"
+    mkdir -p "$HOME/repos"
+}
+
 link_dotfiles() {
-    echo "linking dotfiles"
+    echo 'linking dotfiles'
 
     local -a dotfiles=(
         ghostty
@@ -31,40 +39,29 @@ link_dotfiles() {
     done
 }
 
-create_directories() {
-    echo "creating essential files/directories"
-    mkdir -p "$XDG_DATA_HOME"
-    mkdir -p "$XDG_CONFIG_HOME"
-    mkdir -p "$HOME/personal"
-    mkdir -p "$HOME/repos"
-    mkdir -p "$HOME/.local/bin"
-    mkdir -p "$XDG_CONFIG_HOME/fish/conf.d"
-    touch "$XDG_CONFIG_HOME/fish/conf.d/custom.fish"
-}
-
 configure_git() {
-    echo "configuring git"
+    echo 'configuring git'
     git config --global core.excludesFile "$HOME/.gitignore"
     git config --global pull.rebase true
-    git config --global diff.tool "nvim -d"
-    git config --global merge.tool "nvim -d"
+    git config --global diff.tool 'nvim -d'
+    git config --global merge.tool 'nvim -d'
     git config --global merge.conflictstyle diff3
 }
 
 setup_macos() {
     if ! xcode-select -p &> /dev/null; then
-        echo "installing xcode command line tools"
+        echo 'installing xcode command line tools'
         xcode-select --install
     fi
 
     if ! command -v brew &> /dev/null; then
         echo "installing homebrew"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        (echo; echo "/opt/homebrew/bin/brew shellenv | source") >> "$XDG_CONFIG_HOME/fish/conf.d/custom.fish"
+        # (echo; echo "/opt/homebrew/bin/brew shellenv | source") >> "$XDG_CONFIG_HOME/fish/conf.d/custom.fish"
         eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
 
-    echo "installing essential packages"
+    echo 'installing essential packages'
     brew update
 
     local -a packages=(
@@ -76,7 +73,7 @@ setup_macos() {
 
 build_from_source() {
     local name="$1"
-    local target_dir="$XDG_DATA_HOME/$name"
+    local target_dir="$HOME/personal/$name"
     local repo_url="$2"
     local build_commands="$3"
 
@@ -97,23 +94,23 @@ build_from_source() {
 install_font() {
     local target_dir="$XDG_DATA_HOME/fonts"
     if [[ -f "$target_dir/Hack-Regular.ttf" ]]; then
-        echo "hack font already installed"
+        echo 'hack font already installed'
         return 0
     fi
 
-    echo "installing hack font"
+    echo 'installing hack font'
     wget -O /tmp/Hack-v3.003-ttf.zip \
         https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
 
     mkdir -p "$target_dir"
-    unzip -j /tmp/Hack-v3.003-ttf.zip "ttf/*.ttf" -d "$target_dir"
+    unzip -j /tmp/Hack-v3.003-ttf.zip 'ttf/*.ttf' -d "$target_dir"
 
     rm -f /tmp/Hack-v3.003-ttf.zip
     fc-cache -f -v
 }
 
 setup_linux() {
-    echo "installing essential packages"
+    echo 'installing essential packages'
     sudo apt-get update && sudo apt-get upgrade -y
 
     local -a packages=(
@@ -122,37 +119,34 @@ setup_linux() {
     )
     sudo apt-get install -y "${packages[@]}"
 
-    if [ ! -f "/etc/wsl.conf" ]; then
+    if [ ! -f '/etc/wsl.conf' ]; then
         install_font
 
         # most convenient way for now, since ghostty doesn't use latest zig
         # might be updated in the future
         sudo snap install ghostty --classic
 
-        echo "disable dash to dock hot-keys on ubuntu"
+        echo 'disable dash to dock hot-keys on ubuntu'
         gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
     fi
 }
 
 install_neovim() {
-    build_from_source "neovim" \
-        "https://github.com/neovim/neovim.git" \
-        "make distclean && make CMAKE_BUILD_TYPE=RelWithDebInfo && sudo make install"
+    build_from_source 'neovim' \
+        'https://github.com/neovim/neovim.git' \
+        'make distclean && make CMAKE_BUILD_TYPE=RelWithDebInfo && sudo make install'
 }
 
 configure_shell() {
     if [[ "$SHELL" == */fish ]]; then
-        echo "default shell is already fish"
+        echo 'default shell is already fish'
         return 0
     fi
 
-    echo "changing default shell to fish"
-
-    local fish_path
-    fish_path=$(command -v fish)
-
+    echo 'changing default shell to fish'
+    local fish_path=$(command -v fish)
     if [[ -z "$fish_path" ]]; then
-        echo "fish not found in path" >&2
+        echo 'fish not found in path' >&2
         return 1
     fi
 
@@ -162,16 +156,16 @@ configure_shell() {
     fi
 
     chsh -s "$fish_path"
-    echo "please log out and log back in for shell change to take effect"
+    echo 'please log out and log back in for shell change to take effect'
 }
 
 main() {
-    link_dotfiles
     create_directories
+    link_dotfiles
     configure_git
     echo
 
-    if [[ "$(uname -s)" == "Darwin" ]]; then
+    if [[ "$(uname -s)" == 'Darwin' ]]; then
         setup_macos
     else
         setup_linux
