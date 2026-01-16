@@ -6,6 +6,31 @@ readonly XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+link_dotfiles() {
+    echo "linking dotfiles"
+
+    local -a dotfiles=(
+        ghostty
+        fish
+        nvim
+        .tmux.conf
+        .psqlrc
+        .ideavimrc
+        .ripgreprc
+        .gitignore
+    )
+
+    for file in "${dotfiles[@]}"; do
+        if [[ -d "$ROOT_DIR/$file" ]]; then
+            ln -sfn "$ROOT_DIR/$file" "$XDG_CONFIG_HOME/$file"
+        elif [[ -f "$ROOT_DIR/$file" ]]; then
+            ln -sfn "$ROOT_DIR/$file" "$HOME/$file"
+        else
+            echo "file not found: $ROOT_DIR/$file" >&2
+        fi
+    done
+}
+
 create_directories() {
     echo "creating essential files/directories"
     mkdir -p "$XDG_DATA_HOME"
@@ -15,33 +40,6 @@ create_directories() {
     mkdir -p "$HOME/.local/bin"
     mkdir -p "$XDG_CONFIG_HOME/fish/conf.d"
     touch "$XDG_CONFIG_HOME/fish/conf.d/custom.fish"
-}
-
-link_dotfiles() {
-    echo "linking dotfiles"
-
-    local -a dotfiles=(
-        .tmux.conf
-        .psqlrc
-        .ideavimrc
-        .ripgreprc
-        .gitignore
-        nvim
-        ghostty
-    )
-
-    for file in "${dotfiles[@]}"; do
-        if [[ -f "$ROOT_DIR/$file" ]]; then
-            ln -sfn "$ROOT_DIR/$file" "$HOME/$file"
-        elif [[ -d "$ROOT_DIR/$file" ]]; then
-            ln -sfn "$ROOT_DIR/$file" "$XDG_CONFIG_HOME/$file"
-        else
-            echo "file not found: $ROOT_DIR/$file" >&2
-        fi
-    done
-
-    # exception
-    ln -sfn "$ROOT_DIR/config.fish" "$XDG_CONFIG_HOME/fish/config.fish"
 }
 
 configure_git() {
@@ -168,8 +166,8 @@ configure_shell() {
 }
 
 main() {
-    create_directories
     link_dotfiles
+    create_directories
     configure_git
     echo
 
