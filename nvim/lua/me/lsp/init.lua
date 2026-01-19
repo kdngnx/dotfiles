@@ -24,7 +24,7 @@ lsp.config("*", {
         -- log language server status
         vim.lsp.handlers['language/status'] = function(_, result, _)
             local msg = result.message or "(no message)"
-            notify(string.format("lsp [%s]: %s", client.name, msg), log.WARN)
+            notify(string.format("lsp [%s]: %s", client.name, msg), log.INFO)
         end
     end,
     detached = true
@@ -34,8 +34,10 @@ lsp.config("*", {
 -- some specific language settings can be applied too
 require("me.lsp.clangd")
 require("me.lsp.zls")
+require("me.lsp.jdtls")
 require("me.lsp.pylsp")
+require("me.lsp.luals")
 require("me.lsp.tsserver")
 
 -- can be disabled by `:lua vim.lsp.enable("tsserver", false)` for example
-lsp.enable({ "clangd", "zls", "pylsp", "tsserver" })
+lsp.enable({ "clangd", "zls", "jdtls", "pylsp", "luals", "tsserver" })
