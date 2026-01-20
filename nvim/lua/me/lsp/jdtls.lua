@@ -4,6 +4,7 @@ local jdtls_base = os.getenv("XDG_DATA_HOME") .. "/eclipse.jdt.ls/org.eclipse.jd
 local project_name = fn.fnamemodify(fn.getcwd(), ":p:h:t")
 local workspace_dir = os.getenv("XDG_CACHE_HOME") .. "/jdtls/ws/" .. project_name
 
+-- use `mvn eclipse:clean eclipse:eclipse` or `./gradlew eclipse` to regenerate
 vim.lsp.config("jdtls", {
     cmd = {
         openjdk .. "/bin/java",
@@ -48,7 +49,7 @@ vim.lsp.config("jdtls", {
                         path = os.getenv("JDK21")
                     },
                 },
-                updateBuildConfiguration = "automatic"
+                updateBuildConfiguration = "interactive"
             },
             contentProvider = {
                 preferred = "fernflower"
@@ -75,19 +76,9 @@ vim.lsp.config("jdtls", {
             classFileContentsSupport = true,
             generateToStringPromptSupport = true,
             hashCodeEqualsPromptSupport = true,
-            advancedExtractRefactoringSupport = true,
-            advancedOrganizeImportsSupport = true,
-            generateConstructorsPromptSupport = true,
-            generateDelegateMethodsPromptSupport = true,
             moveRefactoringSupport = true,
             overrideMethodsPromptSupport = true,
-            executeClientCommandSupport = true,
-            inferSelectionSupport = {
-                "extractMethod",
-                "extractVariable",
-                "extractConstant",
-                "extractVariableAllOccurrence"
-            },
+            executeClientCommandSupport = true
         }
-    },
+    }
 })
