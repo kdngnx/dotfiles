@@ -2,6 +2,7 @@ local augroup = vim.api.nvim_create_augroup
 local autocmd = vim.api.nvim_create_autocmd
 local cmd = vim.cmd
 local map = vim.keymap.set
+local utils = require("me.utils")
 
 -- close some windows quicker using `q` instead of typing :q<CR>
 autocmd("FileType", {
@@ -29,24 +30,13 @@ autocmd("BufReadCmd", {
     pattern = "jdt://*",
     callback = function(args)
         local uri = args.match
-        local buf = vim.api.nvim_get_current_buf()
         local timeout_ms = 5000
+        local client, buf = utils.get_current_client("jdtls", timeout_ms)
 
         vim.bo[buf].modifiable = true
         vim.bo[buf].swapfile = false
         vim.bo[buf].buftype = "nofile"
         vim.bo[buf].filetype = "java"
-
-        local client = vim.lsp.get_clients({ name = "jdtls" })[1]
-        if not client then
-            vim.wait(timeout_ms, function()
-                return next(vim.lsp.get_clients({ name = "jdtls", bufnr = buf })) ~= nil
-            end)
-            client = vim.lsp.get_clients({ name = "jdtls", bufnr = buf })[1]
-        else
-            vim.lsp.buf_attach_client(buf, client.id)
-        end
-        assert(client, "must have a `jdtls` client to load class file or jdt uri")
 
         local content
         local function handler(err, result)

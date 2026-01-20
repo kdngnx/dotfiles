@@ -1,8 +1,9 @@
 local fn = vim.fn
 local openjdk = os.getenv("JDK21")
-local jdtls_base = os.getenv("XDG_DATA_HOME") .. "/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository"
+local jdtls_dir = os.getenv("XDG_DATA_HOME") .. "/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository"
 local project_name = fn.fnamemodify(fn.getcwd(), ":p:h:t")
 local workspace_dir = os.getenv("XDG_CACHE_HOME") .. "/jdtls/ws/" .. project_name
+local java_debug_dir = os.getenv("XDG_DATA_HOME") .. "/java-debug/com.microsoft.java.debug.plugin/target"
 
 -- use `mvn eclipse:clean eclipse:eclipse` or `./gradlew eclipse` to regenerate
 vim.lsp.config("jdtls", {
@@ -16,8 +17,8 @@ vim.lsp.config("jdtls", {
         "--add-modules=ALL-SYSTEM",
         "--add-opens", "java.base/java.util=ALL-UNNAMED",
         "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-        "-jar", fn.glob(jdtls_base .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
-        "-configuration", jdtls_base .. "/config_mac_arm",
+        "-jar", fn.glob(jdtls_dir .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
+        "-configuration", jdtls_dir .. "/config_mac_arm",
         "-data", workspace_dir
     },
     filetypes = { "java" },
@@ -79,6 +80,9 @@ vim.lsp.config("jdtls", {
             moveRefactoringSupport = true,
             overrideMethodsPromptSupport = true,
             executeClientCommandSupport = true
+        },
+        bundles = {
+            fn.glob(java_debug_dir .. "com.microsoft.java.debug.plugin-*.jar")
         }
     }
 })

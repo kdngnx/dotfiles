@@ -10,5 +10,5 @@ if status is-interactive
     # SDL_VIDEO_DRIVER=wayland SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1
 
     alias vi=nvim
-    alias myip="echo (dig +short txt ch whoami.cloudflare @1.0.0.1)"
+    alias myip='echo (dig +short txt ch whoami.cloudflare @1.0.0.1)'
 end
