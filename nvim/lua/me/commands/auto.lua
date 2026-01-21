@@ -2,7 +2,7 @@ local augroup = vim.api.nvim_create_augroup
 local autocmd = vim.api.nvim_create_autocmd
 local cmd = vim.cmd
 local map = vim.keymap.set
-local utils = require("me.utils")
+local common = require("me.common")
 
 -- close some windows quicker using `q` instead of typing :q<CR>
 autocmd("FileType", {
@@ -30,8 +30,7 @@ autocmd("BufReadCmd", {
     pattern = "jdt://*",
     callback = function(args)
         local uri = args.match
-        local timeout_ms = 5000
-        local client, buf = utils.get_current_client("jdtls", timeout_ms)
+        local client, buf = common.get_active_lsp_client("jdtls")
 
         vim.bo[buf].modifiable = true
         vim.bo[buf].swapfile = false
@@ -50,6 +49,6 @@ autocmd("BufReadCmd", {
         end
 
         client:request("java/classFileContents", { uri = uri }, handler, buf)
-        vim.wait(timeout_ms, function() return content ~= nil end)
+        vim.wait(9000, function() return content ~= nil end)
     end
 })

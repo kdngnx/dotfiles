@@ -1,11 +1,11 @@
 local M = {}
 local lsp = vim.lsp
 
-function M.get_current_client(ls_name, timeout_ms)
+function M.get_active_lsp_client(ls_name)
     local buf = vim.api.nvim_get_current_buf()
     local client = lsp.get_clients({ name = ls_name })[1]
     if not client then
-        vim.wait(timeout_ms, function()
+        vim.wait(5000, function()
             return next(lsp.get_clients({ name = ls_name, bufnr = buf })) ~= nil
         end)
         client = lsp.get_clients({ name = ls_name, bufnr = buf })[1]
