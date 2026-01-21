@@ -15,16 +15,15 @@ dap.adapters.java = function(callback)
         { command = "vscode.java.startDebugSession" },
         function(err, port)
             assert(not err, vim.inspect(err))
-            callback({
-                type = "server",
-                host = "127.0.0.1",
-                port = port
-            })
+            callback({ type = "server", host = "localhost", port = port })
         end, buf)
 end
 
--- just general use cases
+-- run `set -x JDK_JAVA_OPTIONS "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=localhost:5055"` to turn on debug agent
+-- use `set -e JDK_JAVA_OPTIONS` to erase the env variable
+
 -- project specific configs are located in launch.json
+-- these are configs for general use cases only
 dap.configurations.java = {
     {
         type = "java",

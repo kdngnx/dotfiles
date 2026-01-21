@@ -23,7 +23,6 @@ link_dotfiles() {
         nvim
         .tmux.conf
         .psqlrc
-        .ideavimrc
         .ripgreprc
         .gitignore
     )
