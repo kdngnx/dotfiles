@@ -42,9 +42,9 @@ configure_git() {
     echo 'configuring git'
     git config --global core.excludesFile "$HOME/.gitignore"
     git config --global pull.rebase true
-    git config --global diff.tool 'nvim -d'
-    git config --global merge.tool 'nvim -d'
+    git config --global merge.tool nvimdiff
     git config --global merge.conflictstyle diff3
+    git config --global diff.tool nvimdiff
 }
 
 setup_macos() {

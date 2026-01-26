@@ -6,8 +6,12 @@ local common = require("me.common")
 
 -- close some windows quicker using `q` instead of typing :q<CR>
 autocmd("FileType", {
-    pattern = { "help", "qf", "messages", "checkhealth" },
+    pattern = { "help", "qf", "messages", "checkhealth", "mvntestrunner" },
     callback = function() map("n", "q", cmd.quit, { buffer = 0 }) end
+})
+autocmd("FileType", {
+    pattern = { "mvntestrunner" },
+    callback = function() map("n", "q", cmd.bdelete, { buffer = 0 }) end
 })
 
 -- open the quickfix window whenever a qf command is executed
