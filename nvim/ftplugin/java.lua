@@ -80,7 +80,5 @@ if vim.fn.findfile("pom.xml", ".;") ~= "" then
         end -- add -Dtest optional method name if specified
 
         vim.cmd("terminal " .. test_cmd)
-        vim.wait(2000, function() return vim.bo.filetype ~= "java" end, 100)
-        vim.bo.filetype = "mvntestrunner"
     end, { nargs = "?", desc = "run maven test" })
 end -- maven

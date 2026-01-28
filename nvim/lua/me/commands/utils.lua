@@ -36,3 +36,16 @@ end, {
     complete = function(arglead, _, _) return find_complete(arglead) end,
     bang = false
 })
+
+user_command("GitBlame", function()
+    local start_line = fn.line("w0") -- first visible line, like H
+    local end_line = fn.line("w$") -- last visible line, like L
+    local file = fn.expand("%:p")
+    cmd(string.format("!git blame -L %d,%d %s", start_line, end_line, fn.shellescape(file)))
+end, { nargs = 0 })
+
+user_command("GitDiff", function()
+    local file = fn.expand("%:p")
+    cmd("split")
+    cmd("terminal git diff --color=always " .. fn.shellescape(file))
+end, { nargs = 0 })

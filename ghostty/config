@@ -15,7 +15,4 @@ maximize = true
 window-padding-x = 5
 window-padding-y = 5
 window-padding-balance = true
-quick-terminal-size = 45%
-quick-terminal-position = right
 macos-option-as-alt = true
-keybind = global:alt+space=toggle_quick_terminal

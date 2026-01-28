@@ -1,7 +1,6 @@
 -- keep things simple here; only essentials
 vim.pack.add({
     "https://github.com/tpope/vim-surround",
-    "https://github.com/mhinz/vim-signify",
     "https://github.com/mfussenegger/nvim-dap"
 })
 
