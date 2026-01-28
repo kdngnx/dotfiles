@@ -1,6 +1,7 @@
 local augroup = vim.api.nvim_create_augroup
 local autocmd = vim.api.nvim_create_autocmd
 local cmd = vim.cmd
+local fn = vim.fn
 local common = require("me.common")
 
 -- open the quickfix window whenever a qf command is executed
@@ -19,7 +20,7 @@ autocmd("TextYankPost", {
 
 -- open `jdt://` uri and load them into the buffer
 autocmd("BufReadCmd", {
-    group = augroup("jdtls", { clear = true }),
+    group = augroup("jdtls_class_file_content", { clear = true }),
     pattern = "jdt://*",
     callback = function(args)
         local uri = args.match
@@ -45,3 +46,32 @@ autocmd("BufReadCmd", {
         vim.wait(9000, function() return content ~= nil end)
     end
 })
+
+-- don't do sessionize stuff if opening specific files
+if not vim.v.argv[3] or vim.v.argv[3] == "." then
+    autocmd("BufWritePost", {
+        group = augroup("session_auto_save", { clear = true }),
+        pattern = "*",
+        callback = function()
+            local session_file = common.get_session_filepath()
+            if not session_file then
+                return
+            end
+            cmd("mksession! " .. fn.fnameescape(session_file))
+        end
+    })
+
+    autocmd("VimEnter", {
+        group = augroup("session_auto_load", { clear = true }),
+        pattern = "*",
+        callback = function()
+            local session_file = common.get_session_filepath()
+            if not session_file then
+                return
+            end
+            if fn.filereadable(session_file) == 1 then
+                cmd("source " .. fn.fnameescape(session_file))
+            end
+        end
+    })
+end

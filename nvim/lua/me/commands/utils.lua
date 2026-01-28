@@ -49,3 +49,24 @@ user_command("GitDiff", function()
     cmd("split")
     cmd("terminal git diff --color=always " .. fn.shellescape(file))
 end, { nargs = 0 })
+
+-- remove session files for current repo
+user_command("CleanSession", function()
+    local common = require("me.common")
+    local session_file = common.get_session_filepath()
+    if not session_file then
+        notify("not in a git repository", log.WARN)
+        return
+    end
+
+    if fn.filereadable(session_file) == 0 then
+        notify("session file does not exist: " .. session_file, log.WARN)
+        return
+    end
+
+    if fn.delete(session_file) == 0 then
+        notify("removed session file: " .. session_file, log.INFO)
+    else
+        notify("failed to remove session file: " .. session_file, log.ERROR)
+    end
+end, { nargs = 0 })
