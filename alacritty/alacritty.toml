@@ -1,0 +1,11 @@
+[window]
+startup_mode = "Maximized"
+option_as_alt = "OnlyLeft"
+[scrolling]
+history = 100000
+[font]
+size = 15
+[selection]
+save_to_clipboard = true
+[cursor]
+thickness = 0.2
