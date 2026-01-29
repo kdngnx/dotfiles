@@ -8,6 +8,10 @@
       "rev": "e47878dcf1ccc30136b30d19ab19fe76946d61cd",
       "src": "https://github.com/mfussenegger/nvim-dap"
     },
+    "nvim-treesitter": {
+      "rev": "f8bbc3177d929dc86e272c41cc15219f0a7aa1ac",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
     "vim-signify": {
       "rev": "9ec7989ef5f92c5073de26abb46fc6a998b75ef8",
       "src": "https://github.com/mhinz/vim-signify"
