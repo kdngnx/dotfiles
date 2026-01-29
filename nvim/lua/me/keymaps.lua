@@ -17,7 +17,6 @@ map("n", "<Space>e", [[:edit %:h<C-z>]])
 map("n", "<Space>b", [[:buffer ]])
 map("n", "<Space>f", [[:Find ]])
 map("n", "<Space>F", [[:Find <C-r><C-w><C-z>]])
-map("n", "<Tab>", "<C-6>") -- quickly switch between buffers
 
 -- copy to system clipboard, all motions after `<Space>y` work the same as normal `y`
 map({ "n", "v" }, "<Space>y", [["+y]])
