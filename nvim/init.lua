@@ -1,6 +1,6 @@
-require("me.options")
 require("me.commands.auto")
 require("me.commands.utils")
-require("me.keymaps")
 require("me.lsp")
 require("me.plugins")
+require("me.options")
+require("me.keymaps")

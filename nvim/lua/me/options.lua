@@ -17,8 +17,8 @@ set.list = true
 set.undofile = true
 set.title = true
 set.visualbell = true
-set.termguicolors = false
-vim.cmd.colorscheme("retrobox")
+set.termguicolors = true
+vim.cmd.colorscheme("gruvbox-material")
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_python_provider = 0
