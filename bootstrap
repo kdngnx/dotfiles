@@ -64,8 +64,8 @@ setup_macos() {
     brew update
 
     local -a packages=(
-        curl wget git fish coreutils watch cmake ninja tree ncdu
-        alacritty tmux ripgrep parallel jq gdb universal-ctags
+        curl wget git fish coreutils watch cmake ninja tree parallel
+        alacritty tmux ncdu ripgrep jq gdb universal-ctags font-hack
     )
     brew install "${packages[@]}"
 }
@@ -119,7 +119,7 @@ setup_linux() {
     sudo apt-get install -y "${packages[@]}"
 
     if [ ! -f '/etc/wsl.conf' ]; then
-        # install_font # use default for now
+        install_font
 
         echo 'disable dash to dock hot-keys on ubuntu'
         gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
