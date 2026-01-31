@@ -1,0 +1,12 @@
+shell-integration = fish
+scrollback-limit = 100000
+theme = Gruvbox Dark Hard
+font-family = Hack
+font-feature = -calt,-liga,-dlig
+font-thicken = true
+font-size = 16
+maximize = true
+copy-on-select = clipboard
+adjust-underline-thickness = 50%
+adjust-cursor-thickness = 50%
+macos-option-as-alt = true

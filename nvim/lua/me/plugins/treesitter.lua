@@ -1,5 +1,5 @@
 local parsers = {
-    "c", "cpp", "rust", "java", "python", "lua", "javascript", "typescript", "bash",
+    "c", "cpp", "zig", "java", "python", "lua", "javascript", "typescript", "bash",
     "fish", "json", "markdown", "diff", "sql", "html", "xml", "clojure", "terraform"
 }
 require("nvim-treesitter").install(parsers)

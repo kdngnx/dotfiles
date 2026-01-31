@@ -18,7 +18,7 @@ link_dotfiles() {
     echo 'linking dotfiles'
 
     local -a dotfiles=(
-        alacritty
+        ghostty
         fish
         nvim
         .tmux.conf
@@ -65,7 +65,7 @@ setup_macos() {
 
     local -a packages=(
         curl wget git fish coreutils watch cmake ninja tree parallel
-        alacritty tmux ncdu ripgrep jq gdb universal-ctags font-hack
+        ghostty tmux ncdu ripgrep jq gdb universal-ctags font-hack
     )
     brew install "${packages[@]}"
 }
@@ -113,13 +113,17 @@ setup_linux() {
     sudo apt-get update && sudo apt-get upgrade -y
 
     local -a packages=(
-        curl wget zip git fish coreutils gcc clang clangd cmake make ninja-build xxd ncdu
-        alacritty watch tree vim tmux gdb ripgrep parallel jq wl-clipboard universal-ctags
+        curl wget zip git fish coreutils gcc clang clangd cmake make ninja-build xxd
+        watch tree vim tmux gdb ripgrep ncdu parallel jq wl-clipboard universal-ctags
     )
     sudo apt-get install -y "${packages[@]}"
 
     if [ ! -f '/etc/wsl.conf' ]; then
         install_font
+
+        # most convenient way for now, since ghostty doesn't use latest zig
+        # might be updated in the future
+        sudo snap install ghostty --classic
 
         echo 'disable dash to dock hot-keys on ubuntu'
         gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
