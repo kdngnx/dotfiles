@@ -42,9 +42,8 @@ configure_git() {
     echo 'configuring git'
     git config --global core.excludesFile "$HOME/.gitignore"
     git config --global pull.rebase true
-    git config --global merge.tool nvimdiff
-    git config --global merge.conflictstyle diff3
-    git config --global diff.tool nvimdiff
+    git config --global merge.tool nvimdiff2
+    git config --global diff.tool nvimdiff2
 }
 
 setup_macos() {
@@ -64,8 +63,8 @@ setup_macos() {
     brew update
 
     local -a packages=(
-        curl wget git fish coreutils watch cmake ninja tree parallel
-        ghostty tmux ncdu ripgrep jq gdb universal-ctags font-hack
+        curl wget git fish coreutils watch cmake ninja
+        ghostty tmux tree ncdu ripgrep jq parallel gdb
     )
     brew install "${packages[@]}"
 }
@@ -90,44 +89,22 @@ build_from_source() {
     )
 }
 
-install_font() {
-    local target_dir="$XDG_DATA_HOME/fonts"
-    if [[ -f "$target_dir/Hack-Regular.ttf" ]]; then
-        echo 'hack font already installed'
-        return 0
-    fi
-
-    echo 'installing hack font'
-    wget -O /tmp/Hack-v3.003-ttf.zip \
-        https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
-
-    mkdir -p "$target_dir"
-    unzip -j /tmp/Hack-v3.003-ttf.zip 'ttf/*.ttf' -d "$target_dir"
-
-    rm -f /tmp/Hack-v3.003-ttf.zip
-    fc-cache -f -v
-}
-
 setup_linux() {
     echo 'installing essential packages'
     sudo apt-get update && sudo apt-get upgrade -y
 
     local -a packages=(
-        curl wget zip git fish coreutils gcc clang clangd cmake make ninja-build xxd
-        watch tree vim tmux gdb ripgrep ncdu parallel jq wl-clipboard universal-ctags
+        curl wget zip git fish coreutils gcc clang clangd cmake make ninja-build
+        watch tree vim tmux gdb ripgrep ncdu parallel jq xxd wl-clipboard
     )
     sudo apt-get install -y "${packages[@]}"
 
-    if [ ! -f '/etc/wsl.conf' ]; then
-        install_font
+    # most convenient way for now, since ghostty doesn't use latest zig
+    # might be updated in the future
+    sudo snap install ghostty --classic
 
-        # most convenient way for now, since ghostty doesn't use latest zig
-        # might be updated in the future
-        sudo snap install ghostty --classic
-
-        echo 'disable dash to dock hot-keys on ubuntu'
-        gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
-    fi
+    echo 'disable dash to dock hot-keys on ubuntu'
+    gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
 }
 
 install_neovim() {
@@ -162,20 +139,13 @@ main() {
     create_directories
     link_dotfiles
     configure_git
-    echo
-
     if [[ "$(uname -s)" == 'Darwin' ]]; then
         setup_macos
     else
         setup_linux
     fi
-    echo
-
     install_neovim
-    echo
-
     configure_shell
-    echo
 }
 
 main "$@"

@@ -4,10 +4,6 @@
       "rev": "e47878dcf1ccc30136b30d19ab19fe76946d61cd",
       "src": "https://github.com/mfussenegger/nvim-dap"
     },
-    "vim-signify": {
-      "rev": "9ec7989ef5f92c5073de26abb46fc6a998b75ef8",
-      "src": "https://github.com/mhinz/vim-signify"
-    },
     "vim-surround": {
       "rev": "3d188ed2113431cf8dac77be61b842acb64433d9",
       "src": "https://github.com/tpope/vim-surround"

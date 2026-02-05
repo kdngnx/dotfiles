@@ -4,16 +4,6 @@ local notify = vim.notify
 local fn = vim.fn
 local cmd = vim.cmd
 
--- generate tags in the background
-user_command("Tags", function()
-    if fn.executable("ctags") == 0 then
-        notify("no ctags installation found", log.WARN)
-        return
-    end
-    local job = vim.system({ "ctags", "-R", "--exclude=dist", "." }, { text = true })
-    notify("generate tags..., pid: " .. job.pid, log.INFO)
-end, { nargs = 0 })
-
 -- simple find finder using ripgrep
 local function find_complete(pattern)
     local find_cmd = "rg --files --hidden --follow | grep -i " .. fn.shellescape(pattern)
