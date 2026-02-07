@@ -63,8 +63,8 @@ setup_macos() {
     brew update
 
     local -a packages=(
-        curl wget git fish coreutils watch cmake ninja
-        ghostty tmux tree ncdu ripgrep jq parallel gdb
+        curl wget git fish coreutils watch cmake ninja gdb
+        ghostty tmux tree ncdu ripgrep jq parallel font-hack
     )
     brew install "${packages[@]}"
 }
@@ -89,6 +89,24 @@ build_from_source() {
     )
 }
 
+install_font() {
+    local target_dir="$XDG_DATA_HOME/fonts"
+    if [[ -f "$target_dir/Hack-Regular.ttf" ]]; then
+        echo 'hack font already installed'
+        return 0
+    fi
+
+    echo 'installing hack font'
+    wget -O /tmp/Hack-v3.003-ttf.zip \
+        https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
+
+    mkdir -p "$target_dir"
+    unzip -j /tmp/Hack-v3.003-ttf.zip 'ttf/*.ttf' -d "$target_dir"
+
+    rm -f /tmp/Hack-v3.003-ttf.zip
+    fc-cache -f -v
+}
+
 setup_linux() {
     echo 'installing essential packages'
     sudo apt-get update && sudo apt-get upgrade -y
@@ -102,6 +120,8 @@ setup_linux() {
     # most convenient way for now, since ghostty doesn't use latest zig
     # might be updated in the future
     sudo snap install ghostty --classic
+
+    install_font
 
     echo 'disable dash to dock hot-keys on ubuntu'
     gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false

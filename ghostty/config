@@ -1,7 +1,7 @@
 shell-integration = fish
 scrollback-limit = 100000
 theme = Gruvbox Dark Hard
-font-family = Menlo
+font-family = Hack
 font-feature = -calt,-liga,-dlig
 font-thicken = true
 font-size = 16

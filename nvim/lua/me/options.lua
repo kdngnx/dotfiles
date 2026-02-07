@@ -16,7 +16,6 @@ set.showbreak = "+++ "
 set.list = true
 set.undofile = true
 set.title = true
-set.relativenumber = true
 set.visualbell = true
 set.termguicolors = false
 vim.cmd.colorscheme("retrobox")
