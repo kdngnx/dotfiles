@@ -13,13 +13,9 @@ lsp.config("*", {
 
         -- mappings; use defaults whenever possible
         -- see `:help vim.lsp.*` for documentation on any of the below functions
-        map("n", "gd", lsp.buf.definition)
-        map("n", "gi", lsp.buf.implementation)
-        map("n", "gr", lsp.buf.references)
-        map("n", "gu", function()
+        map("n", "gru", function()
             lsp.buf.references({ includeDeclaration = false })
         end) -- show usages only
-        map("n", "<C-w>a", lsp.buf.code_action)
 
         -- log language server status
         vim.lsp.handlers["language/status"] = function(_, result, _)
@@ -34,9 +30,9 @@ lsp.config("*", {
 -- some specific language settings can be applied too
 require("me.lsp.clangd")
 require("me.lsp.jdtls")
-require("me.lsp.pylsp")
+require("me.lsp.pyright")
 require("me.lsp.luals")
 require("me.lsp.tsserver")
 
 -- can be disabled by `:lua vim.lsp.enable("tsserver", false)` for example
-lsp.enable({ "clangd", "jdtls", "pylsp", "luals", "tsserver" })
+lsp.enable({ "clangd", "jdtls", "pyright", "luals", "tsserver" })

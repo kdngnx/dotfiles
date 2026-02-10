@@ -17,6 +17,7 @@ set.list = true
 set.undofile = true
 set.title = true
 set.visualbell = true
+set.relativenumber = true
 set.termguicolors = false
 vim.cmd.colorscheme("retrobox")
 vim.g.loaded_node_provider = 0

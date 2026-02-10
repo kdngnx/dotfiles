@@ -3,7 +3,7 @@ local jdtls_jdk = os.getenv("JDK25")
 local jdtls_dir = os.getenv("XDG_DATA_HOME") .. "/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository"
 local project_name = fn.fnamemodify(fn.getcwd(), ":p:h:t")
 local workspace_dir = os.getenv("XDG_CACHE_HOME") .. "/jdtls/ws/" .. project_name
-local java_debug_dir = os.getenv("XDG_DATA_HOME") .. "/java-debug/com.microsoft.java.debug.plugin/target"
+local java_debug_dir = os.getenv("XDG_DATA_HOME") .. "/java-debug/com.microsoft.java.debug.plugin/target/"
 
 if not jdtls_jdk then
     return
