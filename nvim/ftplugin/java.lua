@@ -69,16 +69,24 @@ if vim.fn.findfile("pom.xml", ".;") ~= "" then
         local test_class = string.gsub(relative_path, "/", ".")
         test_class = string.gsub(test_class, "%.java$", "")
 
+        -- bang = debug (:MvnTest! or :MvnTest! method)
+        local debug_mode = opts.bang
+        local method_arg = (opts.args and vim.trim(opts.args)) or ""
+
         local test_cmd = "mvn test -e -DskipTests=false"
             .. " -Dic.configurationFile=" .. config_path
             .. " -Dlogback.configurationFile=" .. fn.getcwd() .. "/logback-dev.xml"
             .. " -pl :" .. module_name .. " -Dgroups=medium,small"
             .. " -Dtest=" .. test_class
 
-        if opts.args and opts.args ~= "" then
-            test_cmd = test_cmd .. "\\#" .. opts.args
+        if method_arg ~= "" then
+            test_cmd = test_cmd .. "\\#" .. method_arg
         end -- add -Dtest optional method name if specified
 
+        if debug_mode then
+            test_cmd = test_cmd .. " -DargLine=" ..
+                fn.shellescape("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5155")
+        end -- checkout dap.configurations.java
         vim.cmd("terminal " .. test_cmd)
-    end, { nargs = "?", desc = "run maven test" })
+    end, { nargs = "?", bang = true, desc = "run maven test (method); use ! to debug" })
 end -- maven
