@@ -1,4 +1,5 @@
 local set = vim.opt
+local g = vim.g
 set.swapfile = false
 set.showmatch = true
 set.ignorecase = true
@@ -17,11 +18,39 @@ set.list = true
 set.undofile = true
 set.title = true
 set.visualbell = true
-set.relativenumber = true
+set.cursorline = true
+set.number = true
 set.termguicolors = false
 vim.cmd.colorscheme("retrobox")
-vim.g.loaded_node_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_python_provider = 0
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_ruby_provider = 0
+set.wildignore = {
+    "**/.git/*",
+    "**/node_modules/*",
+    "**/vendor/*",
+    "**/venv/*",
+    "**/.venv/*",
+    "**/target/*",
+    "**/dist/*",
+    "**/build/*",
+    "**/.cache/*",
+    "**/*.so",
+    "**/*.o",
+    "**/*.dll",
+    "**/*.obj",
+    "**/*.pyc",
+    "**/*.class",
+    "**/*.exe",
+    "**/*.tmp",
+    "**/*.swp",
+    "**/*.jpg",
+    "**/*.png",
+    "**/*.gif",
+    "**/*.pdf",
+    "**/*.zip",
+    "**/*.tar.gz",
+    "**/.DS_Store",
+}
+g.loaded_node_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_python_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_ruby_provider = 0
