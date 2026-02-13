@@ -12,3 +12,5 @@ copy-on-select = clipboard
 adjust-underline-thickness = 50%
 adjust-cursor-thickness = 50%
 macos-option-as-alt = true
+keybind = alt+left=csi:1;3D
+keybind = alt+right=csi:1;3C

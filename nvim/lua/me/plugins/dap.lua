@@ -3,12 +3,12 @@ local dap = require("dap")
 local map = vim.keymap.set
 local fn = vim.fn
 
-map("n", "<Space>db", dap.toggle_breakpoint)
+map("n", "<C-w>b", dap.toggle_breakpoint)
 map("n", "<Up>", dap.continue)
 map("n", "<Down>", dap.step_into)
 map("n", "<Right>", dap.step_over)
 map("n", "<Left>", dap.step_out)
-map("n", "<Space>dr", function() dap.repl.open({ height = 15 }) end)
+map("n", "<C-w><C-b>", function() dap.repl.open({ height = 15 }) end)
 
 dap.adapters.java = function(callback)
     local client, buf = common.get_active_lsp_client("jdtls")

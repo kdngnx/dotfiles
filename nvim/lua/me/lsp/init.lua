@@ -11,11 +11,14 @@ lsp.config("*", {
         lsp.completion.enable(true, client.id, bufnr, { autotrigger = false })
         lsp.inlay_hint.enable(true)
 
-        -- mappings; use defaults whenever possible
         -- see `:help vim.lsp.*` for documentation on any of the below functions
-        map("n", "gru", function()
+        map("n", "gi", lsp.buf.implementation)
+        map("n", "gr", lsp.buf.references)
+        map("n", "gu", function()
             lsp.buf.references({ includeDeclaration = false })
         end) -- show usages only
+        map("n", "<C-h>", lsp.buf.document_symbol)
+        map("i", "<C-k>", lsp.buf.signature_help)
 
         -- log language server status
         vim.lsp.handlers["language/status"] = function(_, result, _)
