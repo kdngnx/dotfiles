@@ -15,7 +15,6 @@ if status is-interactive
     abbr -a -- gd 'git diff'
     abbr -a -- gf 'git fetch'
     abbr -a -- gp 'git pull'
-    abbr -a -- gP 'git push'
     abbr -a -- ga 'git add'
     abbr -a -- gaa 'git add --all'
     abbr -a -- gap 'git add --patch'

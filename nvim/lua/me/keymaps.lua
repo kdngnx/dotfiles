@@ -7,15 +7,18 @@ if vim.fn.executable("rg") > 0 then
     set.grepprg = "rg --vimgrep --smart-case --no-heading --column"
     set.grepformat:prepend("%f:%l:%c:%m")
     -- add `--hidden --no-ignore` for wildcard
-    map("n", "<C-_>", [[:silent grep! ]]) -- also mean <C-/>
-    map("v", "<C-_>", [["0y:silent grep! --case-sensitive <C-r>0]])
+    map("n", "<Space>g", [[:silent grep! ]])
+    map("v", "<Space>g", [["0y:silent grep! --case-sensitive <C-r>0]])
+    map("v", "<Space>G", [["0y:silent grep! --case-sensitive <C-r><C-w><CR>]])
+    map("n", "<Space>/", [["0y:silent grep! --hidden --no-ignore ]])
 end -- result can be accessible through qf list
 
 -- some proper ways to browse/search
-map("n", "<C-p>", [[:find ]])
-map("n", "<C-j>", [[:edit %:h<C-z><C-z>]])
-map("n", "<C-n>", [[:buffer ]])
-map("n", "<Tab>", [[:edit #<CR>]])
+map("n", "<Space>f", [[:find ]])
+map("n", "<Space>F", [[:find <C-r><C-w><C-z>]])
+map("n", "<Space>e", [[:edit %:h<C-z><C-z>]])
+map("n", "<Space>b", [[:buffer ]])
+map("n", "<C-j>", [[:edit #<CR>]], { silent = true })
 
 -- copy to system clipboard, all motions after `<C-w>y` work the same as normal `y`
 map({ "n", "v" }, "<C-w>y", [["+y]])
