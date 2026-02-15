@@ -9,7 +9,7 @@ if vim.fn.executable("rg") > 0 then
     -- add `--hidden --no-ignore` for wildcard
     map("n", "<Space>g", [[:silent grep! ]])
     map("v", "<Space>g", [["0y:silent grep! --case-sensitive <C-r>0]])
-    map("v", "<Space>G", [["0y:silent grep! --case-sensitive <C-r><C-w><CR>]])
+    map("n", "<Space>G", [["0y:silent grep! --case-sensitive <C-r><C-w><CR>]])
     map("n", "<Space>/", [["0y:silent grep! --hidden --no-ignore ]])
 end -- result can be accessible through qf list
 
