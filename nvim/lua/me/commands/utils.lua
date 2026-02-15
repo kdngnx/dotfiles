@@ -31,13 +31,9 @@ end, { nargs = 0 })
 user_command("CleanSession", function()
     local common = require("me.common")
     local session_file = common.get_session_filepath()
-    if not session_file then
-        notify("not in a git repository", log.WARN)
-        return
-    end
 
-    if fn.filereadable(session_file) == 0 then
-        notify("session file does not exist: " .. session_file, log.WARN)
+    if not session_file or fn.filereadable(session_file) == 0 then
+        notify("no session found", log.WARN)
         return
     end
 

@@ -26,15 +26,7 @@ function M.get_git_branch()
     return branch[1]
 end
 
-function M.is_git_repo()
-    return fn.system("git rev-parse --git-dir 2>/dev/null") ~= ""
-end
-
 function M.get_session_filename()
-    if not M.is_git_repo() then
-        return nil
-    end
-
     local branch = M.get_git_branch()
     if not branch then
         return nil
