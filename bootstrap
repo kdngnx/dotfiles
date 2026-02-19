@@ -18,7 +18,7 @@ link_dotfiles() {
     echo 'linking dotfiles'
 
     local -a dotfiles=(
-        ghostty
+        alacritty
         fish
         nvim
         .tmux.conf
@@ -64,7 +64,7 @@ setup_macos() {
 
     local -a packages=(
         curl wget git fish coreutils watch cmake ninja gdb
-        ghostty tmux tree ncdu ripgrep jq parallel font-hack
+        alacritty tmux tree ncdu ripgrep jq parallel font-hack
     )
     brew install "${packages[@]}"
 }
@@ -113,13 +113,9 @@ setup_linux() {
 
     local -a packages=(
         curl wget zip git fish coreutils gcc clang clangd cmake make ninja-build
-        watch tree vim tmux gdb ripgrep ncdu parallel jq xxd wl-clipboard
+        alacritty watch tree vim tmux gdb ripgrep ncdu parallel jq xxd wl-clipboard
     )
     sudo apt-get install -y "${packages[@]}"
-
-    # most convenient way for now, since ghostty doesn't use latest zig
-    # might be updated in the future
-    sudo snap install ghostty --classic
 
     install_font
 
