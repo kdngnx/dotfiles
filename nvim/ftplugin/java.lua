@@ -6,7 +6,7 @@ setlocal.expandtab = true
 
 if vim.fn.findfile("pom.xml", ".;") ~= "" then
     setlocal.errorformat = "[ERROR] %f:[%l\\,%v] %m"
-    setlocal.makeprg = "mvn clean compile -U"
+    setlocal.makeprg = "mvn compile"
 
     -- MvnTest current class
     local user_command = vim.api.nvim_create_user_command

@@ -13,11 +13,11 @@ end -- early exit if JDK env vars haven't been set
 vim.lsp.config("jdtls", {
     cmd = {
         jdtls_jdk .. "/bin/java",
+        "-XX:+UseG1GC", "-Xms1G", "-Xmx4G",
         "-Declipse.application=org.eclipse.jdt.ls.core.id1",
         "-Dosgi.bundles.defaultStartLevel=4",
         "-Declipse.product=org.eclipse.jdt.ls.core.product",
         "-Dlog.level=ALL",
-        "-Xmx2G",
         "--add-modules=ALL-SYSTEM",
         "--add-opens=java.base/java.util=ALL-UNNAMED",
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
@@ -34,7 +34,12 @@ vim.lsp.config("jdtls", {
     settings = {
         -- see https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
         java = {
-            jdt = { ls = { javac = { enabled = true } } },
+            autobuild = { enabled = false },
+            codeGeneration = {
+                generateComments = true,
+                useBlocks = true
+            },
+            completion = { enabled = true },
             configuration = {
                 maven = {
                     downloadSources = true,
@@ -59,26 +64,20 @@ vim.lsp.config("jdtls", {
                         path = os.getenv("JDK25")
                     }
                 },
-                updateBuildConfiguration = "interactive"
+                updateBuildConfiguration = "disabled"
             },
-            contentProvider = {
-                preferred = "fernflower"
-            },
-            signatureHelp = {
-                enabled = true
-            },
+            contentProvider = { preferred = "fernflower" },
+            jdt = { ls = { javac = { enabled = false } } },
+            maxConcurrentBuilds = 1,
+            signatureHelp = { enabled = true },
             sources = {
                 organizeImports = {
                     starThreshold = 99999,
                     staticStarThreshold = 99999
                 }
             },
-            symbols = {
-                includeSourceMethodDeclarations = true
-            },
-            telemetry = {
-                enabled = false
-            }
+            symbols = { includeSourceMethodDeclarations = true },
+            telemetry = { enabled = false }
         }
     },
     init_options = {
