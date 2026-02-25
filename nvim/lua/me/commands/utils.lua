@@ -17,29 +17,24 @@ _G.rg_find_func = function(cmd_arg, _)
         end, files)
     end -- case-insensitive filter
     return files
-end -- returns list of file path strings
+end     -- returns list of file path strings
 vim.opt.findfunc = "v:lua.rg_find_func"
 
 user_command("Blame", function()
-    local start_line = fn.line("w0") -- first visible line, like H
-    local end_line = fn.line("w$")   -- last visible line, like L
-    local file = fn.expand("%:p")
-    cmd(string.format("!git blame -L %d,%d %s", start_line, end_line, fn.shellescape(file)))
+    cmd(string.format("!git blame -L %d,%d %s", fn.line("w0"), fn.line("w$"), fn.shellescape(fn.expand("%:p"))))
 end, { nargs = 0 })
 
 -- remove session files for current repo
 user_command("CleanSession", function()
-    local common = require("me.common")
-    local session_file = common.get_session_filepath()
-
-    if not session_file or fn.filereadable(session_file) == 0 then
+    local sfile = require("me.common").get_session_filepath()
+    if not sfile or fn.filereadable(sfile) == 0 then
         notify("no session found", log.WARN)
         return
     end
 
-    if fn.delete(session_file) == 0 then
-        notify("removed session file: " .. session_file, log.INFO)
+    if fn.delete(sfile) == 0 then
+        notify("removed session file: " .. sfile, log.INFO)
     else
-        notify("failed to remove session file: " .. session_file, log.ERROR)
+        notify("failed to remove session file: " .. sfile, log.ERROR)
     end
 end, { nargs = 0 })

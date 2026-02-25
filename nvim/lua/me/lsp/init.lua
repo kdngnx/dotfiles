@@ -17,6 +17,7 @@ lsp.config("*", {
         map("n", "gu", function()
             lsp.buf.references({ includeDeclaration = false })
         end) -- show usages only
+        map("n", "<C-w>a", lsp.buf.code_action)
         map("n", "<C-h>", lsp.buf.document_symbol)
         map("i", "<C-k>", lsp.buf.signature_help)
 

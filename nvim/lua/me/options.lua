@@ -22,33 +22,6 @@ set.cursorline = true
 set.number = true
 set.termguicolors = false
 vim.cmd.colorscheme("retrobox")
-set.wildignore = {
-    "**/.git/*",
-    "**/node_modules/*",
-    "**/vendor/*",
-    "**/venv/*",
-    "**/.venv/*",
-    "**/target/*",
-    "**/dist/*",
-    "**/build/*",
-    "**/.cache/*",
-    "**/*.so",
-    "**/*.o",
-    "**/*.dll",
-    "**/*.obj",
-    "**/*.pyc",
-    "**/*.class",
-    "**/*.exe",
-    "**/*.tmp",
-    "**/*.swp",
-    "**/*.jpg",
-    "**/*.png",
-    "**/*.gif",
-    "**/*.pdf",
-    "**/*.zip",
-    "**/*.tar.gz",
-    "**/.DS_Store",
-}
 g.loaded_node_provider = 0
 g.loaded_perl_provider = 0
 g.loaded_python_provider = 0

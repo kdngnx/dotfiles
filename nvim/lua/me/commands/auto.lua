@@ -30,13 +30,14 @@ autocmd("BufReadCmd", {
     group = augroup("jdtls_class_file_content", { clear = true }),
     pattern = "jdt://*",
     callback = function(args)
-        local uri = args.match
         local client, buf = common.get_active_lsp_client("jdtls")
+        local uri = args.match
+        local bo = vim.bo
 
-        vim.bo[buf].modifiable = true
-        vim.bo[buf].swapfile = false
-        vim.bo[buf].buftype = "nofile"
-        vim.bo[buf].filetype = "java"
+        bo[buf].modifiable = true
+        bo[buf].swapfile = false
+        bo[buf].buftype = "nofile"
+        bo[buf].filetype = "java"
 
         local content
         local function handler(err, result)
@@ -46,25 +47,23 @@ autocmd("BufReadCmd", {
             local normalized = string.gsub(result, "\r\n", "\n")
             local source_lines = vim.split(normalized, "\n", { plain = true })
             vim.api.nvim_buf_set_lines(buf, 0, -1, false, source_lines)
-            vim.bo[buf].modifiable = false
+            bo[buf].modifiable = false
         end
 
         client:request("java/classFileContents", { uri = uri }, handler, buf)
-        vim.wait(9000, function() return content ~= nil end)
+        vim.wait(5000, function() return content ~= nil end)
     end
 })
 
 -- don't do sessionize stuff if opening specific files
-if not vim.v.argv[3] or vim.v.argv[3] == "." then
+local wd = vim.v.argv[3]
+if not wd or wd == "." then
     autocmd("BufWritePost", {
         group = augroup("session_auto_save", { clear = true }),
         pattern = "*",
         callback = function()
-            local session_file = common.get_session_filepath()
-            if not session_file then
-                return
-            end
-            cmd("mksession! " .. fn.fnameescape(session_file))
+            local sfile = common.get_session_filepath()
+            if sfile then cmd("mksession! " .. fn.fnameescape(sfile)) end
         end
     })
 
@@ -72,13 +71,8 @@ if not vim.v.argv[3] or vim.v.argv[3] == "." then
         group = augroup("session_auto_load", { clear = true }),
         pattern = "*",
         callback = function()
-            local session_file = common.get_session_filepath()
-            if not session_file then
-                return
-            end
-            if fn.filereadable(session_file) == 1 then
-                cmd("source " .. fn.fnameescape(session_file))
-            end
+            local sfile = common.get_session_filepath()
+            if sfile and fn.filereadable(sfile) == 1 then cmd("source " .. fn.fnameescape(sfile)) end
         end
     })
 end

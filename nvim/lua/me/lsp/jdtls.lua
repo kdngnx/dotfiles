@@ -71,8 +71,8 @@ vim.lsp.config("jdtls", {
             signatureHelp = { enabled = true },
             sources = {
                 organizeImports = {
-                    starThreshold = 99999,
-                    staticStarThreshold = 99999
+                    starThreshold = 9999,
+                    staticStarThreshold = 9999
                 }
             },
             symbols = { includeSourceMethodDeclarations = true },
