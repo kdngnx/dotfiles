@@ -32,7 +32,7 @@ link_dotfiles() {
             ln -sfn "$ROOT_DIR/$file" "$XDG_CONFIG_HOME/$file"
         elif [[ -f "$ROOT_DIR/$file" ]]; then
             ln -sfn "$ROOT_DIR/$file" "$HOME/$file"
-        else
+        else # should never happen
             echo "file not found: $ROOT_DIR/$file" >&2
         fi
     done

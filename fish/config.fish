@@ -19,6 +19,8 @@ if status is-interactive
     abbr -a -- gaa 'git add --all'
     abbr -a -- gap 'git add --patch'
     abbr -a -- gc 'git commit -m'
+    abbr -a -- gss 'git stash save'
+    abbr -a -- gsp 'git stash pop'
 
     alias vi=nvim
     alias myip='echo (dig +short txt ch whoami.cloudflare @1.0.0.1)'

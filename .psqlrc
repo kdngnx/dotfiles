@@ -10,3 +10,5 @@
 \set COMP_KEYWORD_CASE upper
 \set ON_ERROR_ROLLBACK interactive
 \set AUTOCOMMIT off
+\set sl 'SELECT * FROM'
+\set sp 'SET search_path TO'
