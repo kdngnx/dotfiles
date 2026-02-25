@@ -16,9 +16,9 @@ end -- result can be accessible through qf list
 -- some proper ways to browse/search
 map("n", "<Space>f", [[:find ]])
 map("n", "<Space>F", [[:find <C-r><C-w><C-z>]])
-map("n", "<Space>e", [[:edit %:h<C-z><C-z>]])
-map("n", "<Space>b", [[:buffer ]])
-map("n", "<C-j>", [[:edit #<CR>]], { silent = true })
+map("n", "<C-j>", [[:buffer ]])
+map("n", "<C-n>", [[:edit %:h<C-z><C-z>]])
+map("n", "<C-p>", [[:edit #<CR>]], { silent = true })
 
 -- copy to system clipboard, all motions after `<C-w>y` work the same as normal `y`
 map({ "n", "v" }, "<C-w>y", [["+y]])
@@ -31,6 +31,8 @@ map("c", "<C-e>", "<End>")
 map("c", "<M-BS>", "<C-w>")
 map("c", "<M-Left>", "<C-Left>")
 map("c", "<M-Right>", "<C-Right>")
+map("c", "<C-b>", "<Up>")
+map("c", "<C-f>", "<Down>")
 
 -- better keymap to toggle netrw
 map("n", "-", cmd.Explore)

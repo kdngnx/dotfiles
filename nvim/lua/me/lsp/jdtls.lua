@@ -26,11 +26,10 @@ vim.lsp.config("jdtls", {
         "-data", workspace_dir
     },
     filetypes = { "java" },
-    -- root_markers = {
-    --     { "mvnw",      "gradlew", "settings.gradle", "settings.gradle.kts", ".git" },
-    --     { "build.xml", "pom.xml", "build.gradle",    "build.gradle.kts" }
-    -- },
-    root_dir = vim.fn.getcwd(),
+    root_markers = {
+        { "mvnw",      "gradlew", "settings.gradle", "settings.gradle.kts", ".git" },
+        { "build.xml", "pom.xml", "build.gradle",    "build.gradle.kts" }
+    },
     settings = {
         -- see https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
         java = {
