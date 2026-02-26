@@ -1,5 +1,5 @@
-local setlocal = vim.opt_local
-setlocal.shiftwidth = 4
-setlocal.tabstop = 4
-setlocal.softtabstop = 4
-setlocal.expandtab = true
+local setl = vim.opt_local
+setl.shiftwidth = 4
+setl.tabstop = 4
+setl.softtabstop = 4
+setl.expandtab = true

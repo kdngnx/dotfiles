@@ -10,7 +10,7 @@ _G.rg_find_func = function(cmd_arg, _)
     if not ok or not files then
         return {}
     end
-    if type(cmd_arg) == "string" and cmd_arg ~= "" then
+    if type(cmd_arg) == "string" and #cmd_arg > 0 then
         local lower = cmd_arg:lower()
         files = vim.tbl_filter(function(f)
             return f:lower():find(lower, 1, true) ~= nil
@@ -27,14 +27,7 @@ end, { nargs = 0 })
 -- remove session files for current repo
 user_command("CleanSession", function()
     local sfile = require("me.common").get_session_filepath()
-    if not sfile or fn.filereadable(sfile) == 0 then
-        notify("no session found", log.WARN)
-        return
-    end
-
-    if fn.delete(sfile) == 0 then
-        notify("removed session file: " .. sfile, log.INFO)
-    else
-        notify("failed to remove session file: " .. sfile, log.ERROR)
-    end
+    assert(sfile and fn.filereadable(sfile) == 1, "no session found")
+    assert(fn.delete(sfile) == 0, "failed to remove session file: " .. sfile)
+    notify("removed session file: " .. sfile, log.INFO)
 end, { nargs = 0 })

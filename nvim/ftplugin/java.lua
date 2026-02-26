@@ -1,92 +1,79 @@
-local setlocal = vim.opt_local
-setlocal.shiftwidth = 4
-setlocal.tabstop = 4
-setlocal.softtabstop = 4
-setlocal.expandtab = true
+local setl = vim.opt_local
+local fn = vim.fn
 
-if vim.fn.findfile("pom.xml", ".;") ~= "" then
-    setlocal.errorformat = "[ERROR] %f:[%l\\,%v] %m"
-    setlocal.makeprg = "mvn compile"
+setl.shiftwidth = 4
+setl.tabstop = 4
+setl.softtabstop = 4
+setl.expandtab = true
+
+if #fn.findfile("pom.xml", ".;") > 0 then
+    setl.errorformat = "[ERROR] %f:[%l\\,%v] %m"
+    setl.makeprg = "mvn compile"
 
     -- MvnTest current class
     local user_command = vim.api.nvim_create_user_command
-    local fn = vim.fn
-    local notify = vim.notify
-    local log = vim.log.levels
-
     user_command("MvnTest", function(opts)
-        local file_path = fn.expand("%:.") -- relative path
-        local file_name = fn.fnamemodify(file_path, ":t:r")
-        local is_test_file = string.match(file_name, "Test$")
-            or string.match(file_name, "Tests$")
-            or string.find(file_path, "/test/", 1, true) ~= nil
+        local fpath = fn.expand("%:.") -- relative path
+        local fname = fn.fnamemodify(fpath, ":t:r")
 
         -- check if current file is a test file; early exit if not
-        if not is_test_file then
-            notify("not a test file.", log.ERROR)
-            return
-        end
+        local is_test_file = string.match(fname, "[Tt]ests?$")
+            or string.find(fpath, "/test/", 1, true)
+        assert(is_test_file, "not a test file")
 
         -- walk up the directory tree to find pom.xml
-        local module_dir = fn.fnamemodify(file_path, ":h")
-        local found = false
-        while module_dir ~= "" and module_dir ~= "." do
-            local test_pom = module_dir .. "/pom.xml"
-            if fn.filereadable(test_pom) == 1 then
-                found = true
+        local modpath = fn.fnamemodify(fpath, ":h")
+        while #modpath > 0 do
+            if fn.filereadable(modpath .. "/pom.xml") == 1 then
                 break
             end
-            module_dir = fn.fnamemodify(module_dir, ":h")
-        end
-        if not found then
-            notify("could not find pom.xml", log.ERROR)
-            return
+            modpath = fn.fnamemodify(modpath, ":h")
         end
 
-        local module_name = fn.system("cd " ..
-            fn.shellescape(module_dir) .. " && mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout")
-        module_name = vim.trim(module_name)
-        if module_name == "" or vim.v.shell_error ~= 0 then
-            notify("failed to get module name", log.ERROR)
-            return
-        end
+        -- generate test command
+        local test_cmd = { "terminal mvn test -e -DskipTests=false" }
+        local config_path = string.format("%s/configuration.properties", fn.getcwd())
+        if #modpath > 0 then
+            local module = vim.trim(fn.system(string.format(
+                "cd %s && mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout", fn.shellescape(modpath))))
+            assert(vim.v.shell_error == 0 and #module > 0, "failed to get module name")
+            table.insert(test_cmd, " -pl :")
+            table.insert(test_cmd, module)
 
-        -- get current module configuration.properties
-        local config_path = module_dir .. "/configuration.properties"
-        local project_root = fn.getcwd()
-        if fn.filereadable(config_path) ~= 1 then
-            config_path = project_root .. "/configuration.properties"
-        end -- otherwise default to project root
+            local mod_config_path = string.format("%s/configuration.properties", modpath)
+            if fn.filereadable(mod_config_path) == 1 then
+                config_path = mod_config_path
+            end
+        end -- non-root module
+
+        assert(fn.filereadable(config_path) == 1, "no valid configuration.properties file")
+        table.insert(test_cmd, " -Dic.configurationFile=")
+        table.insert(test_cmd, config_path)
+        table.insert(test_cmd, " -Dlogback.configurationFile=")
+        table.insert(test_cmd, fn.getcwd())
+        table.insert(test_cmd, "/logback-dev.xml")
+        table.insert(test_cmd, " -Dgroups=medium,small")
 
         -- extract test class name from current file
-        local test_dir_pattern = "/src/test/java/"
-        local test_dir_pos = string.find(file_path, test_dir_pattern, 1, true)
-        if not test_dir_pos then
-            notify("could not extract test class name", log.ERROR)
-            return
-        end
-        local relative_path = string.sub(file_path, test_dir_pos + #test_dir_pattern)
-        local test_class = string.gsub(relative_path, "/", ".")
-        test_class = string.gsub(test_class, "%.java$", "")
+        local tdir_pattern = "/src/test/java/"
+        local tdir_pos = string.find(fpath, tdir_pattern, 1, true)
+        assert(tdir_pos, "could not extract test class name")
 
-        -- bang = debug (:MvnTest! or :MvnTest! method)
-        local debug_mode = opts.bang
-        local method_arg = (opts.args and vim.trim(opts.args)) or ""
+        local test_class = fpath:sub(tdir_pos + #tdir_pattern):gsub("/", "."):gsub("%.java$", "")
+        table.insert(test_cmd, " -Dtest=")
+        table.insert(test_cmd, test_class)
 
-        local test_cmd = "mvn test -e -DskipTests=false"
-            .. " -Dic.configurationFile=" .. config_path
-            .. " -Dlogback.configurationFile=" .. fn.getcwd() .. "/logback-dev.xml"
-            .. " -pl :" .. module_name .. " -Dgroups=medium,small"
-            .. " -Dtest=" .. test_class
-
-        if method_arg ~= "" then
-            test_cmd = test_cmd .. "\\#" .. method_arg
+        local method_arg = (opts.args and vim.trim(opts.args))
+        if #method_arg > 0 then
+            table.insert(test_cmd, "\\#")
+            table.insert(test_cmd, method_arg)
         end -- add -Dtest optional method name if specified
 
-        if debug_mode then
-            test_cmd = test_cmd .. " -DargLine=" ..
-                fn.shellescape("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5155")
+        -- bang = debug (:MvnTest! or :MvnTest! method)
+        if opts.bang then
+            table.insert(test_cmd, " -DargLine=")
+            table.insert(test_cmd, fn.shellescape("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5155"))
         end -- checkout dap.configurations.java
-        vim.cmd("terminal " .. test_cmd)
+        vim.cmd(table.concat(test_cmd))
     end, { nargs = "?", bang = true, desc = "run maven test (method); use ! to debug" })
 end -- maven

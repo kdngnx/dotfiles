@@ -1,4 +1,3 @@
-local common = require("me.common")
 local dap = require("dap")
 local map = vim.keymap.set
 local fn = vim.fn
@@ -11,7 +10,7 @@ map("n", "<Left>", dap.step_out)
 map("n", "<C-w><C-b>", function() dap.repl.open({ height = 15 }) end)
 
 dap.adapters.java = function(callback)
-    local client, buf = common.get_active_lsp_client("jdtls")
+    local client, buf = require("me.common").get_active_lsp_client("jdtls")
     client:request("workspace/executeCommand",
         { command = "vscode.java.startDebugSession" },
         function(err, port)

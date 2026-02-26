@@ -1,7 +1,7 @@
 local map = vim.keymap.set
 local lsp = vim.lsp
-local log = vim.log.levels
 local notify = vim.notify
+local log = vim.log.levels
 
 -- consistent behaviours across language servers
 vim.diagnostic.config({ virtual_text = true, underline = true })
@@ -14,6 +14,7 @@ lsp.config("*", {
         -- see `:help vim.lsp.*` for documentation on any of the below functions
         map("n", "gi", lsp.buf.implementation)
         map("n", "gr", lsp.buf.references)
+        map("n", "gR", lsp.buf.rename)
         map("n", "gu", function()
             lsp.buf.references({ includeDeclaration = false })
         end) -- show usages only

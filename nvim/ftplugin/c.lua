@@ -1,11 +1,11 @@
-local setlocal = vim.opt_local
-setlocal.shiftwidth = 4
-setlocal.tabstop = 4
-setlocal.softtabstop = 4
-setlocal.expandtab = true
-setlocal.formatprg = "clang-format"
+local setl = vim.opt_local
+setl.shiftwidth = 4
+setl.tabstop = 4
+setl.softtabstop = 4
+setl.expandtab = true
+setl.formatprg = "clang-format"
 
-if vim.fn.findfile("CMakeLists.txt", ".;") ~= "" then
-    setlocal.errorformat = "%f:%l:%c: %m"
-    setlocal.makeprg = "cmake -S . -B build && cmake --build build"
+if #vim.fn.findfile("CMakeLists.txt", ".;") > 0 then
+    setl.errorformat = "%f:%l:%c: %m"
+    setl.makeprg = "cmake -S . -B build && cmake --build build"
 end -- cmake
