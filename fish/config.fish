@@ -1,4 +1,4 @@
-set fish_greeting
+set -gx fish_greeting "It's $(date '+%A, %B %d, %Y at %H:%M') - bugs don't fix themselves. Or do they?"
 if status is-interactive
     set -gx XDG_CONFIG_HOME "$HOME/.config"
     set -gx XDG_DATA_HOME "$HOME/.local/share"
@@ -9,18 +9,9 @@ if status is-interactive
     set -gx RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
     set -gx PATH "$HOME/.local/bin" $PATH
 
-    abbr -a -- - 'cd -'
-    abbr -a -- gs 'git status'
-    abbr -a -- gco 'git checkout'
-    abbr -a -- gd 'git diff'
-    abbr -a -- gf 'git fetch'
-    abbr -a -- gp 'git pull'
-    abbr -a -- ga 'git add'
-    abbr -a -- gaa 'git add --all'
-    abbr -a -- gap 'git add --patch'
-    abbr -a -- gc 'git commit -m'
-    abbr -a -- gss 'git stash save'
-    abbr -a -- gsp 'git stash pop'
+    set __fish_git_prompt_showdirtystate 'yes'
+    set __fish_git_prompt_showstashstate 'yes'
+    set __fish_git_prompt_showupstream 'yes'
 
     alias vi=nvim
     alias myip='echo (dig +short txt ch whoami.cloudflare @1.0.0.1)'

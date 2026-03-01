@@ -21,6 +21,7 @@ set.visualbell = true
 set.cursorline = true
 set.number = true
 set.termguicolors = false
+set.fillchars:append({ vert = "|" })
 vim.cmd.colorscheme("retrobox")
 g.loaded_node_provider = 0
 g.loaded_perl_provider = 0

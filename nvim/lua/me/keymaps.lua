@@ -16,9 +16,9 @@ end -- result can be accessible through qf list
 -- some proper ways to browse/search
 map("n", "<Space>f", [[:find ]])
 map("n", "<Space>F", [[:find <C-r><C-w><C-z>]])
-map("n", "<C-j>", [[:buffer ]])
+map("n", "<C-p>", [[:buffer ]])
 map("n", "<C-n>", [[:edit %:h<C-z><C-z>]])
-map("n", "<C-p>", [[:edit #<CR>]], { silent = true })
+map("n", "<C-j>", [[:edit #<CR>]], { silent = true })
 
 -- copy to system clipboard, all motions after `<C-w>y` work the same as normal `y`
 map({ "n", "v" }, "<C-w>y", [["+y]])
